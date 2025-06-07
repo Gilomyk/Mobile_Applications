@@ -1,8 +1,25 @@
+import java.util.Properties
+import java.io.FileInputStream
+
+android.buildFeatures.buildConfig = true
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.kapt)
 }
+
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
+val apiKey: String = localProperties.getProperty("API_KEY") ?: "MISSING"
+
 
 android {
     namespace = "com.example.mobile_application"
@@ -16,6 +33,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -36,6 +54,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 }
 
@@ -56,4 +75,18 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
+    implementation(libs.viewmodel)
+    implementation(libs.livedata)
+    implementation(libs.glide)
+    implementation(libs.recyclerview)
+    implementation(libs.fragment)
+    implementation(libs.navigation)
+    implementation(libs.navigation.ui)
+    /*TODO*/
+//    Ogarnąć pobieranie tej biblioteki z libs.version
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    kapt(libs.glide.compiler)
 }
