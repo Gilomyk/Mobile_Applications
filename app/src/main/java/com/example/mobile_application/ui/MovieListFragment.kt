@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mobile_application.R
-import com.example.mobile_application.ui.MovieViewModel
 import com.example.mobile_application.ui.adapter.MovieAdapter
 
 class MovieListFragment : Fragment() {
@@ -36,5 +37,21 @@ class MovieListFragment : Fragment() {
         }
 
         viewModel.fetchMovies(null) // Można podać tytuł do wyszukania
+
+        val searchEditText = view.findViewById<EditText>(R.id.searchEditText)
+        searchEditText.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val query = v.text.toString().trim()
+                if (query.isBlank()) {
+                    viewModel.fetchMovies(null)
+                } else {
+                    viewModel.fetchMovies(query)
+                }
+                true
+            } else {
+                false
+            }
+        }
+
     }
 }

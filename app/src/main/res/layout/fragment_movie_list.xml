@@ -5,6 +5,8 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <include layout="@layout/header"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
