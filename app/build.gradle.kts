@@ -56,6 +56,9 @@ android {
         compose = true
         viewBinding = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.13"
+    }
 }
 
 dependencies {
@@ -85,8 +88,18 @@ dependencies {
     implementation(libs.fragment)
     implementation(libs.navigation)
     implementation(libs.navigation.ui)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.material3)
     /*TODO*/
 //    Ogarnąć pobieranie tej biblioteki z libs.version
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.compose.runtime:runtime:1.6.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.1")
+
+
     kapt(libs.glide.compiler)
 }

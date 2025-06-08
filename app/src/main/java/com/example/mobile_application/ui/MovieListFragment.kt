@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mobile_application.R
 import com.example.mobile_application.ui.adapter.MovieAdapter
+import com.example.mobile_application.viewmodel.MovieViewModel
 
 class MovieListFragment : Fragment() {
 
