@@ -17,8 +17,9 @@ class MovieAdapter(private val onClick: (Movie) -> Unit) : ListAdapter<Movie, Mo
         fun bind(movie: Movie) {
             binding.textTitle.text = movie.title
             binding.textDuration.text = "${movie.duration} min"
+            val securePosterUrl = movie.poster.replace("http://", "https://")
             Glide.with(binding.imagePoster.context)
-                .load(movie.poster)
+                .load(securePosterUrl)
                 .placeholder(R.drawable.placeholder_image) // obrazek tymczasowy
                 .error(R.drawable.error_image)             // obrazek w przypadku błędu
                 .into(binding.imagePoster)
