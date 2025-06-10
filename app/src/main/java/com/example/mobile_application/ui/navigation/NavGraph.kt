@@ -10,9 +10,7 @@ import com.example.mobile_application.ui.pages.HomeScreen
 import com.example.mobile_application.ui.pages.MovieDetailsScreen
 
 @Composable
-fun AppNavHost(
-    onMovieClick: (Int) -> Unit
-) {
+fun AppNavHost() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "home") {
