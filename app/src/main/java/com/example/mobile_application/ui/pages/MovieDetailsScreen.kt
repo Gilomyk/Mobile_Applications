@@ -1,4 +1,4 @@
-package com.example.mobile_application.ui
+package com.example.mobile_application.ui.pages
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.*
-import androidx.compose.ui.draw.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.*
