@@ -1,5 +1,6 @@
 package com.example.mobile_application.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,15 +15,63 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mobile_application.network.ApiClient
 import com.example.mobile_application.viewmodel.MovieViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(viewModel: MovieViewModel = viewModel(), onMovieClick: (Int) -> Unit) {
     var searchQuery by remember { mutableStateOf("") }
+
+    //Coś do testów API
+    LaunchedEffect(Unit) {
+        try {
+//            val response = ApiClient.movieService.getMovies(
+//                title = null
+//            )
+//            val response = ApiClient.cinemaService.getCinemas()
+//            val response = ApiClient.ticketService.getTickets(
+//                page = 1,
+//                ordering = "showing_date",
+//                userId = 1
+//            )
+//            val response = ApiClient.ticketService.getActiveDiscounts()
+//            val response = ApiClient.cinemaService.getCinemaHalls(
+//                page = null,
+//                cinemaId = 1
+//            )
+//            val response = ApiClient.cinemaService.getSeats(
+//                page = null,
+//                hallId = 2
+//            )
+//            val response = ApiClient.movieShowingService.getMovieShowings(
+//                page = null,
+//                movieId = 10,
+//                dateAfter = "2025-06-12",
+//                dateBefore = "2025-06-13"
+//            )
+//            val response = ApiClient.movieService.getGenres(
+//                page = null
+//            )
+            val response = ApiClient.movieService.getMovieCrews(
+                page = null,
+            )
+            if (response.isSuccessful) {
+                Log.d("API_TEST", "Response: ${response.body()}")
+            } else {
+                Log.e("API_TEST", "HTTP error: ${response.code()}")
+            }
+        } catch (e: Exception) {
+            Log.e("API_TEST", "Exception: ${e.localizedMessage}")
+        }
+    }
+
 
     // Automatycznie fetchujemy filmy przy pierwszym renderze lub zmianie query
     LaunchedEffect(searchQuery) {
