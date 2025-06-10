@@ -43,5 +43,6 @@ object ApiClient {
     val ticketService: TicketApiService = retrofit.create(TicketApiService::class.java)
     val cinemaService: CinemaApiService = retrofit.create(CinemaApiService::class.java)
     val movieShowingService: MovieShowingApiService = retrofit.create(MovieShowingApiService::class.java)
+    val orderService: OrderApiService = retrofit.create(OrderApiService::class.java)
 
 }

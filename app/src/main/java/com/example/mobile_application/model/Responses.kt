@@ -76,3 +76,10 @@ data class TicketResponse(
     val previous: String?,
     val results: List<Ticket>,
 )
+
+data class OrderResponse(
+    val count: Int,
+    val next: String?,
+    val previous: String?,
+    val results: List<Order>
+)

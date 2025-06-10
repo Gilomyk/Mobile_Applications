@@ -93,3 +93,17 @@ data class Ticket(
     val discount: Int,
     val cancelled: Boolean,
 )
+
+data class PaymentStatus(
+    val id: Int,
+    val label: String,
+)
+
+data class Order(
+    val id: Int,
+    val tickets: List<Int>,
+    val amount: Int,
+    val status: Int,
+    val user: Int,
+    val email: String
+)
