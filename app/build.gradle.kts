@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 android.buildFeatures.buildConfig = true
 
@@ -92,13 +92,15 @@ dependencies {
     implementation(libs.compose.material3)
     /*TODO*/
 //    Ogarnąć pobieranie tej biblioteki z libs.version
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("io.coil-kt:coil-compose:2.4.0")
-
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("androidx.compose.runtime:runtime:1.6.1")
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.1")
+    implementation(libs.okhttp.logging)
+    implementation(libs.coil.compose)
+    implementation(libs.compose.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.runtime)
+    implementation(libs.androidx.runtime.livedata)
+    // Lazy grid (foundation)
+    implementation(libs.androidx.foundation)
 
 
     kapt(libs.glide.compiler)

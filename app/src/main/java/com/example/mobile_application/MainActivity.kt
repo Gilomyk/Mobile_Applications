@@ -3,8 +3,7 @@ package com.example.mobile_application
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material3.MaterialTheme
-import com.example.mobile_application.ui.MovieDetailsScreen
+import com.example.mobile_application.ui.HomeScreen
 import com.example.mobile_application.ui.theme.Mobile_ApplicationTheme
 
 //class MainActivity : AppCompatActivity() {
@@ -14,15 +13,29 @@ import com.example.mobile_application.ui.theme.Mobile_ApplicationTheme
 //    }
 //}
 
-// Testowo dla strony z detalami
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Mobile_ApplicationTheme {
-                MovieDetailsScreen(movieId = 1)
+                HomeScreen(onMovieClick = { movie ->
+                    // Obsługa przejścia np. do szczegółów
+                    // np. navController.navigate("details/${movie.id}")
+                })
             }
         }
     }
 }
+// Testowo dla strony z detalami
+//class MainActivity : AppCompatActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContent {
+//            Mobile_ApplicationTheme {
+//                MovieDetailsScreen(movieId = 1)
+//            }
+//        }
+//    }
+//}
 
