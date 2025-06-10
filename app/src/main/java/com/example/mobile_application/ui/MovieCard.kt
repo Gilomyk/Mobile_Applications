@@ -43,6 +43,7 @@ fun MovieCard(movie: Movie, onClick: () -> Unit) {
         Text(
             text = movie.title,
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+            color = Color.White,
             modifier = Modifier.padding(top = 4.dp)
         )
         Text(

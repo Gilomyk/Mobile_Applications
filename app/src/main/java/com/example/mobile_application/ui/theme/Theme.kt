@@ -9,25 +9,22 @@ import androidx.compose.runtime.Composable
 
 // Material3 dark and light color schemes
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
-    background = DarkBlue,
-    surface = DarkBlue,
-    onBackground = White,
-    onSurface = CrewTextGray,
-    // możesz dopisać inne pola
+    primary      = AccentPurple,
+    secondary    = AccentPurple,
+    background   = DarkBg,
+    surface      = DarkSearchBg,      // np. dla kontenerów
+    onBackground = OnDarkBg,
+    onSurface    = OnDarkBg,
+    outline      = DarkSearchBorder,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
-    background = White,
-    surface = White,
-    onBackground = DarkBlue,
-    onSurface = MetaGray,
-    // itd.
+    primary      = AccentPurple,
+    secondary    = AccentPurple,
+    background   = LightBg,
+    surface      = LightBg,
+    onBackground = OnLightBg,
+    onSurface    = OnLightBg,
 )
 
 @Composable

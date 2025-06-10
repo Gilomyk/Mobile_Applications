@@ -3,7 +3,7 @@ package com.example.mobile_application
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import com.example.mobile_application.ui.HomeScreen
+import com.example.mobile_application.ui.AppNavHost
 import com.example.mobile_application.ui.theme.Mobile_ApplicationTheme
 
 //class MainActivity : AppCompatActivity() {
@@ -19,10 +19,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Mobile_ApplicationTheme {
-                HomeScreen(onMovieClick = { movie ->
-                    // Obsługa przejścia np. do szczegółów
-                    // np. navController.navigate("details/${movie.id}")
-                })
+                AppNavHost(
+                    onMovieClick = { movieId ->
+                        // nawigacja obsłużona w NavHost, więc przekazujemy dalej
+                    }
+                )
             }
         }
     }
