@@ -1,22 +1,49 @@
-package com.example.mobile_application.ui
+package com.example.mobile_application.ui.pages
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.*
-import androidx.compose.ui.draw.*
-import androidx.compose.ui.res.*
-import androidx.compose.ui.text.*
-import androidx.compose.ui.text.font.*
-import androidx.compose.ui.unit.*
-import androidx.compose.ui.layout.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.*
+import coil.compose.rememberAsyncImagePainter
 import com.example.mobile_application.R
-import com.example.mobile_application.ui.theme.*
+import com.example.mobile_application.ui.theme.CrewBg
+import com.example.mobile_application.ui.theme.CrewBorderAccent
+import com.example.mobile_application.ui.theme.CrewText
+import com.example.mobile_application.ui.theme.GenrePurple
+import com.example.mobile_application.ui.theme.MetaText
+import com.example.mobile_application.ui.theme.MovieDescription
 import com.example.mobile_application.viewmodel.MovieDetailsViewModel
 
 @Composable
@@ -96,7 +123,7 @@ fun MovieDetailsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Gatunki
-            if (!m.genre.isNullOrEmpty()) {
+            if (m.genre.isNotEmpty()) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     m.genre.forEach {
                         Text(
@@ -128,8 +155,8 @@ fun MovieDetailsScreen(
 
             // Reżyser i główna rola
             SectionBlock(title = "Twórcy") {
-                CrewInfoItem(label = "Reżyser", value = c.director?.joinToString { it.name })
-                CrewInfoItem(label = "Główna rola", value = c.mainLead?.joinToString { it.name })
+                CrewInfoItem(label = "Reżyser", value = c.director.joinToString { it.name })
+                CrewInfoItem(label = "Główna rola", value = c.main_lead.joinToString { it.name })
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.example.mobile_application.ui
+package com.example.mobile_application.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
@@ -6,11 +6,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.mobile_application.ui.pages.HomeScreen
+import com.example.mobile_application.ui.pages.MovieDetailsScreen
 
 @Composable
-fun AppNavHost(
-    onMovieClick: (Int) -> Unit
-) {
+fun AppNavHost() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "home") {
