@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 android.buildFeatures.buildConfig = true
 
@@ -56,6 +56,9 @@ android {
         compose = true
         viewBinding = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.13"
+    }
 }
 
 dependencies {
@@ -85,8 +88,20 @@ dependencies {
     implementation(libs.fragment)
     implementation(libs.navigation)
     implementation(libs.navigation.ui)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.material3)
     /*TODO*/
 //    Ogarnąć pobieranie tej biblioteki z libs.version
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation(libs.okhttp.logging)
+    implementation(libs.coil.compose)
+    implementation(libs.compose.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.runtime)
+    implementation(libs.androidx.runtime.livedata)
+    // Lazy grid (foundation)
+    implementation(libs.androidx.foundation)
+
+
     kapt(libs.glide.compiler)
 }
