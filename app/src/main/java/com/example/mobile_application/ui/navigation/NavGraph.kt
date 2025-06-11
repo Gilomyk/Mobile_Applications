@@ -1,5 +1,7 @@
 package com.example.mobile_application.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -9,6 +11,7 @@ import androidx.navigation.navArgument
 import com.example.mobile_application.ui.HomeScreen
 import com.example.mobile_application.ui.pages.MovieDetailsScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavHost() {
     val navController = rememberNavController()
