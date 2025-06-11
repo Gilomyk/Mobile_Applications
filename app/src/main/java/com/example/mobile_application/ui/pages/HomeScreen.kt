@@ -15,15 +15,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobile_application.network.ApiClient
+import com.example.mobile_application.ui.components.MovieCard
+import com.example.mobile_application.ui.components.SearchHeader
 import com.example.mobile_application.viewmodel.MovieViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(viewModel: MovieViewModel = viewModel(), onMovieClick: (Int) -> Unit) {

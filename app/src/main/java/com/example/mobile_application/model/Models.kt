@@ -48,7 +48,7 @@ data class Genre(
 data class MovieCrew(
     val id: Int,
     val director: List<Director>,
-    val mainLead: List<MainLead>,
+    val main_lead: List<MainLead>,
 )
 
 data class Director(
