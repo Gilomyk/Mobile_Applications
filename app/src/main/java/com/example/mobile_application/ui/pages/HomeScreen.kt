@@ -31,35 +31,10 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), onMovieClick: (Int) -> U
     //Coś do testów API
     LaunchedEffect(Unit) {
         try {
-//            val response = ApiClient.movieService.getMovies(
-//                title = null
-//            )
-//            val response = ApiClient.cinemaService.getCinemas()
-//            val response = ApiClient.ticketService.getTickets(
-//                page = 1,
-//                ordering = "showing_date",
-//                userId = 1
-//            )
-//            val response = ApiClient.ticketService.getActiveDiscounts()
-//            val response = ApiClient.cinemaService.getCinemaHalls(
-//                page = null,
-//                cinemaId = 1
-//            )
-//            val response = ApiClient.cinemaService.getSeats(
-//                page = null,
-//                hallId = 2
-//            )
-//            val response = ApiClient.movieShowingService.getMovieShowings(
-//                page = null,
-//                movieId = 10,
-//                dateAfter = "2025-06-12",
-//                dateBefore = "2025-06-13"
-//            )
-//            val response = ApiClient.movieService.getGenres(
-//                page = null
-//            )
-            val response = ApiClient.movieService.getMovieCrews(
-                page = null,
+            val response = ApiClient.cinemaService.getClosestCinemas(
+                latitude = 52.2534204,
+                longitude = 20.9002643,
+                amount = null
             )
             if (response.isSuccessful) {
                 Log.d("API_TEST", "Response: ${response.body()}")

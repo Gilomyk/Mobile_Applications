@@ -1,5 +1,6 @@
 package com.example.mobile_application.network
 
+import com.example.mobile_application.model.Cinema
 import com.example.mobile_application.model.CinemaHallResponse
 import com.example.mobile_application.model.CinemaResponse
 import com.example.mobile_application.model.HallTypeResponse
@@ -20,4 +21,11 @@ interface CinemaApiService {
 
     @GET("/api/seats")
     suspend fun getSeats(@Query("page") page: Int?,@Query("hall") hallId: Int?): Response<SeatResponse>
+
+    @GET("/api/cinemas/get_closest")
+    suspend fun getClosestCinemas(
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double,
+        @Query("amount") amount: Int?
+    ): Response<List<Cinema>>
 }

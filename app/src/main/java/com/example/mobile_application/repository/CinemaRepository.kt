@@ -23,6 +23,23 @@ class CinemaRepository {
         return@withContext null
     }
 
+    suspend fun fetchClosestCinemas(latitude: Double, longitude: Double, amount: Int?=null): List<Cinema>? = withContext(Dispatchers.IO) {
+        try {
+            val response = ApiClient.cinemaService.getClosestCinemas(
+                latitude =latitude,
+                longitude =longitude,
+                amount =amount)
+            if (response.isSuccessful) {
+                return@withContext response.body()
+            } else {
+                Log.e("MovieRepository", "API error: ${response.code()}")
+            }
+        } catch (e: Exception) {
+            Log.e("MovieRepository", "Exception: ${e.localizedMessage}")
+        }
+        return@withContext null
+    }
+
     suspend fun fetchCinemaHalls(cinemaId: Int?): List<CinemaHall>? = withContext(Dispatchers.IO) {
         try {
             val response = ApiClient.cinemaService.getCinemaHalls(page = null, cinemaId = cinemaId)
