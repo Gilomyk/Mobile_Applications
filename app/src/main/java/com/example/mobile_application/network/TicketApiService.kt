@@ -13,7 +13,8 @@ interface TicketApiService {
     suspend fun getTickets(
         @Query("page") page: Int?,
         @Query("ordering") ordering: String?,
-        @Query("user") userId: Int?
+        @Query("user") userId: Int?,
+        @Query("showing") showing: Int?
     ): Response<TicketResponse>
 
     @POST("/api/tickets")

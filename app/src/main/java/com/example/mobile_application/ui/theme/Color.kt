@@ -32,3 +32,9 @@ val GenrePurple       = AccentPurple
 val CrewBg            = Color(0x0AFFFFFF)
 val CrewBorderAccent  = Color(0xFFFACC15)
 val CrewText          = Color(0xFFF1F1F1)
+
+// Seats
+val JustTakenColor = Color(0xFFff5555)
+val TakenColor = Color(0xFF73138b)
+val SelectedColor = Color(0xFF4318d1)
+val AvailableColor = Color(0xFF1e2433)

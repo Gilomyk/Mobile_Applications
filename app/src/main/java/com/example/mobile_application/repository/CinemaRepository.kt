@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.mobile_application.model.Cinema
 import com.example.mobile_application.model.CinemaHall
 import com.example.mobile_application.model.HallType
+import com.example.mobile_application.model.Seat
 import com.example.mobile_application.network.ApiClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -88,6 +89,20 @@ class CinemaRepository {
     suspend fun fetchHallTypes(): List<HallType>? = withContext(Dispatchers.IO) {
         try {
             val response = ApiClient.cinemaService.getHallTypes()
+            if (response.isSuccessful) {
+                return@withContext response.body()?.results
+            } else {
+                Log.e("MovieRepository", "API error: ${response.code()}")
+            }
+        } catch (e: Exception) {
+            Log.e("MovieRepository", "Exception: ${e.localizedMessage}")
+        }
+        return@withContext null
+    }
+
+    suspend fun fetchAllSeats(hallId: Int): List<Seat>? = withContext(Dispatchers.IO) {
+        try {
+            val response = ApiClient.cinemaService.getSeats(page = null, hallId = hallId)
             if (response.isSuccessful) {
                 return@withContext response.body()?.results
             } else {

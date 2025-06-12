@@ -11,12 +11,14 @@ class TicketRepository {
         page: Int? = null,
         user: Int? = null,
         ordering: String = "showing_date",
+        showing: Int?
     ): List<Ticket>? = withContext(Dispatchers.IO) {
         try {
             val response = ApiClient.ticketService.getTickets(
                 page=page,
                 userId=user,
-                ordering=ordering)
+                ordering=ordering,
+                showing=showing)
             if (response.isSuccessful) {
                 return@withContext response.body()?.results
             } else {

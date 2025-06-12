@@ -54,6 +54,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.mobile_application.R
 import com.example.mobile_application.model.Cinema
+import com.example.mobile_application.model.CinemaHall
 import com.example.mobile_application.model.HallType
 import com.example.mobile_application.model.Movie
 import com.example.mobile_application.model.MovieCrew
@@ -73,6 +74,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun MovieDetailsScreen(
     movieId: Int,
+    onShowtimeClick: (Int, Int) -> Unit,
     viewModel: MovieDetailsViewModel = viewModel()
 ) {
     LaunchedEffect(movieId) {
@@ -120,9 +122,11 @@ fun MovieDetailsScreen(
                     movieId = movieId,
                     viewModel = viewModel,
                     cinemas = cinemas,
+                    cinemaHalls =  cinemaHalls,
                     hallTypes = hallTypes,
                     showingsByDate = showingsByDate,
-                    loading = loadingShowtimes
+                    loading = loadingShowtimes,
+                    onShowtimeClick = onShowtimeClick
                 )
             }
         }
@@ -228,9 +232,11 @@ fun ShowingsTab(
     movieId: Int,
     viewModel: MovieDetailsViewModel,
     cinemas: List<Cinema>,
+    cinemaHalls: List<CinemaHall>,
     hallTypes: List<HallType>,
     showingsByDate: Map<String, List<MovieShowing>>,
-    loading: Boolean
+    loading: Boolean,
+    onShowtimeClick: (Int, Int) -> Unit
 ) {
     val dates = remember { (0 until 30).map { LocalDate.now().plusDays(it.toLong()) } }
     var selectedDate by remember { mutableStateOf(dates.first()) }
@@ -273,8 +279,10 @@ fun ShowingsTab(
                     span = { index, _ ->
                         GridItemSpan(5)
                     }
-                ) { index, showings ->
-                    ShowtimeCard(showings, hallTypes = hallTypes)
+                ) { index, showing ->
+                    ShowtimeCard(showing, hallTypes, onClick = {
+                        onShowtimeClick(showing.hall, showing.id)
+                    })
                 }
             }
         }
