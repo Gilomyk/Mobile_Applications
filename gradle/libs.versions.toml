@@ -17,6 +17,8 @@ okhttp_logging = "4.12.0"
 compose-ui = "1.8.2"
 compose-material3 = "1.2.1"
 runtime = "1.8.2"
+playServicesLocation = "21.3.0"
+accompanistPermissions = "0.37.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -55,6 +57,8 @@ compose-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.r
 
 okhttp = "com.squareup.okhttp3:okhttp:${versions.okhttp}"
 okhttp_logging = "com.squareup.okhttp3:logging-interceptor:4.12.0"
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanistPermissions" }
 
 
 [plugins]

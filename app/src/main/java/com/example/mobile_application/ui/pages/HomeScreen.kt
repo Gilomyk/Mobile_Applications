@@ -1,14 +1,23 @@
 package com.example.mobile_application.ui
 
+import android.graphics.drawable.Icon
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,26 +34,29 @@ import com.example.mobile_application.ui.components.SearchHeader
 import com.example.mobile_application.viewmodel.MovieViewModel
 
 @Composable
-fun HomeScreen(viewModel: MovieViewModel = viewModel(), onMovieClick: (Int) -> Unit) {
+fun HomeScreen(
+    viewModel: MovieViewModel = viewModel(),
+    onMovieClick: (Int) -> Unit,
+    onLocationClick: () -> Unit) {
     var searchQuery by remember { mutableStateOf("") }
 
     //Coś do testów API
-    LaunchedEffect(Unit) {
-        try {
-            val response = ApiClient.cinemaService.getClosestCinemas(
-                latitude = 52.2534204,
-                longitude = 20.9002643,
-                amount = null
-            )
-            if (response.isSuccessful) {
-                Log.d("API_TEST", "Response: ${response.body()}")
-            } else {
-                Log.e("API_TEST", "HTTP error: ${response.code()}")
-            }
-        } catch (e: Exception) {
-            Log.e("API_TEST", "Exception: ${e.localizedMessage}")
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        try {
+//            val response = ApiClient.cinemaService.getClosestCinemas(
+//                latitude = 52.2534204,
+//                longitude = 20.9002643,
+//                amount = null
+//            )
+//            if (response.isSuccessful) {
+//                Log.d("API_TEST", "Response: ${response.body()}")
+//            } else {
+//                Log.e("API_TEST", "HTTP error: ${response.code()}")
+//            }
+//        } catch (e: Exception) {
+//            Log.e("API_TEST", "Exception: ${e.localizedMessage}")
+//        }
+//    }
 
 
     // Automatycznie fetchujemy filmy przy pierwszym renderze lub zmianie query
@@ -55,13 +67,30 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), onMovieClick: (Int) -> U
     val movies by viewModel.movies.observeAsState() // lub .observeAsState() jeśli używasz LiveData
 
     Column(modifier = Modifier.fillMaxSize()) {
-        SearchHeader(
-            query = searchQuery,
-            onQueryChange = { searchQuery = it },
-            onSearch = {
-                viewModel.fetchMovies(searchQuery.ifBlank { null })
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Box(modifier = Modifier.weight(1f)) {
+                SearchHeader(
+                    query = searchQuery,
+                    onQueryChange = { searchQuery = it },
+                    onSearch = {
+                        viewModel.fetchMovies(searchQuery.ifBlank { null })
+                    }
+                )
             }
-        )
+
+            IconButton(
+                onClick = { onLocationClick() }) {
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = "Lokalizacja"
+                )
+            }
+        }
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),

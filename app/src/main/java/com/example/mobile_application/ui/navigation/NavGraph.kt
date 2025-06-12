@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.mobile_application.ui.HomeScreen
 import com.example.mobile_application.ui.pages.MovieDetailsScreen
+import com.example.mobile_application.ui.pages.ClosestCinemaList
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -22,7 +23,10 @@ fun AppNavHost() {
             HomeScreen(
                 onMovieClick = { movieId ->
                     navController.navigate("details/$movieId")
-                }
+                },
+                onLocationClick = {
+                    navController.navigate("location")
+                },
             )
         }
 
@@ -32,6 +36,10 @@ fun AppNavHost() {
         ) { backStackEntry ->
             val movieId = backStackEntry.arguments?.getInt("movieId") ?: 0
             MovieDetailsScreen(movieId = movieId)
+        }
+
+        composable("location") {
+            ClosestCinemaList()
         }
     }
 }
