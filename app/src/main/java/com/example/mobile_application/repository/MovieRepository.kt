@@ -11,7 +11,21 @@ class MovieRepository {
 
     suspend fun fetchMovies(title: String?): List<Movie>? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.movieService.getMovies(title)
+            val response = ApiClient.movieService.getMovies(title=title)
+            if (response.isSuccessful) {
+                return@withContext response.body()?.results
+            } else {
+                Log.e("MovieRepository", "API error: ${response.code()}")
+            }
+        } catch (e: Exception) {
+            Log.e("MovieRepository", "Exception: ${e.localizedMessage}")
+        }
+        return@withContext null
+    }
+
+    suspend fun fetchMoviesByCinema(cinemaId: Int): List<Movie>? = withContext(Dispatchers.IO) {
+        try {
+            val response = ApiClient.movieService.getMovies(cinemaId=cinemaId)
             if (response.isSuccessful) {
                 return@withContext response.body()?.results
             } else {

@@ -14,7 +14,7 @@ interface CinemaApiService {
     suspend fun getCinemas(): Response<CinemaResponse>
 
     @GET("/api/cinema_halls")
-    suspend fun getCinemaHalls(@Query("page") page: Int?, @Query("cinema") cinemaId: Int?): Response<CinemaHallResponse>
+    suspend fun getCinemaHalls(@Query("page") page: Int?, @Query("cinema") cinemaId: Int?, ): Response<CinemaHallResponse>
 
     @GET("/api/hall_types")
     suspend fun getHallTypes(): Response<HallTypeResponse>
