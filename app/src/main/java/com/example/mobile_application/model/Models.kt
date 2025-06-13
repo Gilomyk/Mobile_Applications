@@ -92,6 +92,7 @@ data class Ticket(
     val buyer: Int,
     val discount: Int,
     val cancelled: Boolean,
+    val showing: Int
 )
 
 data class PaymentStatus(
@@ -106,4 +107,18 @@ data class Order(
     val status: Int,
     val user: Int,
     val email: String
+)
+
+data class User(
+    val id: Int,
+    val username: String,
+    val email: String,
+    val tickets: List<Ticket>
+)
+// - /profile
+// - /token
+// - /register
+
+data class Token(
+    val token: String
 )

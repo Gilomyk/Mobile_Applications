@@ -21,17 +21,28 @@ object ApiClient {
     }
 
     private val client = OkHttpClient.Builder()
+        // Interceptor do dodawania Api-Key do wszystkich endpointów, z wyjątkiem getProfile
         .addInterceptor { chain ->
             val originalRequest = chain.request()
-            val modifiedRequest = originalRequest.newBuilder()
-                .addHeader("Authorization", "Api-Key $apiKey")
-                .build()
 
-            println("➡️ Dodaję nagłówek: Api-Key $apiKey") // 🔍 DEBUG
-            chain.proceed(modifiedRequest)
+            // Jeśli zapytanie to getProfile, dodaj nagłówek Bearer
+            if (originalRequest.url.toString().contains("/profile")) {
+                val token = "giveToken"/*TODO: give token*/
+                val modifiedRequest = originalRequest.newBuilder()
+                    .addHeader("Authorization", "Bearer $token")
+                    .build()
+                chain.proceed(modifiedRequest)
+            } else {
+                // Dla pozostałych endpointów dodaj Api-Key
+                val modifiedRequest = originalRequest.newBuilder()
+                    .addHeader("Authorization", "Api-Key $apiKey")
+                    .build()
+                chain.proceed(modifiedRequest)
+            }
         }
         .addInterceptor(loggingInterceptor)
         .build()
+
 
     val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
@@ -44,5 +55,6 @@ object ApiClient {
     val cinemaService: CinemaApiService = retrofit.create(CinemaApiService::class.java)
     val movieShowingService: MovieShowingApiService = retrofit.create(MovieShowingApiService::class.java)
     val orderService: OrderApiService = retrofit.create(OrderApiService::class.java)
+    val userService: UserApiService = retrofit.create(UserApiService::class.java)
 
 }

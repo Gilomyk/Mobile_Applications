@@ -83,3 +83,10 @@ data class OrderResponse(
     val previous: String?,
     val results: List<Order>
 )
+
+//data class UserResponse(
+//    val id: Int,
+//    val username: String,
+//    val email: String,
+//    val tickets: List<Ticket>
+//)

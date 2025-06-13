@@ -41,22 +41,24 @@ fun HomeScreen(
     var searchQuery by remember { mutableStateOf("") }
 
     //Coś do testów API
-//    LaunchedEffect(Unit) {
-//        try {
-//            val response = ApiClient.cinemaService.getClosestCinemas(
-//                latitude = 52.2534204,
-//                longitude = 20.9002643,
-//                amount = null
-//            )
-//            if (response.isSuccessful) {
-//                Log.d("API_TEST", "Response: ${response.body()}")
-//            } else {
-//                Log.e("API_TEST", "HTTP error: ${response.code()}")
-//            }
-//        } catch (e: Exception) {
-//            Log.e("API_TEST", "Exception: ${e.localizedMessage}")
-//        }
-//    }
+    LaunchedEffect(Unit) {
+        try {
+            val response = ApiClient.userService.getProfile()
+            Log.d("API_TEST", "Response headers: ${response.headers()}")
+            Log.d("API_TEST", "HTTP message: ${response.code()} - ${response.message()}")
+            if (response.isSuccessful) {
+                Log.d("API_TEST", "Response: ${response.body()}")
+            } else {
+                Log.e("API_TEST", "HTTP error: ${response.code()} - ${response.message()}")
+                Log.e("API_TEST", "Response body: ${response.errorBody()?.string()}")
+            }
+        } catch (e: Exception) {
+            Log.e("API_TEST", "Exception: ${e.localizedMessage}")
+            Log.e("API_TEST", "Stacktrace: ${Log.getStackTraceString(e)}")
+
+        }
+    }
+
 
 
     // Automatycznie fetchujemy filmy przy pierwszym renderze lub zmianie query
