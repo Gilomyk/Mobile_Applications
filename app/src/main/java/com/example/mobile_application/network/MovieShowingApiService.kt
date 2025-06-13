@@ -11,6 +11,7 @@ interface MovieShowingApiService {
         @Query("page") page: Int?,
         @Query("movie") movieId: Int?,
         @Query("showing_date_after") dateAfter: String?,
-        @Query("showing_date_before") dateBefore: String?
+        @Query("showing_date_before") dateBefore: String?,
+        @Query("cinema") cinemaId: Int?
     ): Response<MovieShowingResponse>
 }

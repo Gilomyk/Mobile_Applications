@@ -1,6 +1,7 @@
 package com.example.mobile_application.viewmodel
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -56,8 +57,15 @@ class MovieDetailsViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun loadShowingsForDate(movieId: Int, date: LocalDate) {
+    fun loadShowingsForDate(movieId: Int, date: LocalDate, cinemaId: Int?=null) {
         val dateStr = date.toString()
+
+        // Resetowanie danych przy zmianie kina lub wymuszenie załadowania nowych danych
+        if (cinemaId != null) {
+            // Możesz usunąć dane dla danego kina, żeby wymusić przeładowanie
+            _showingsByDate.value = _showingsByDate.value.filterNot { it.key.startsWith(dateStr) }
+        }
+
         if (_showingsByDate.value.containsKey(dateStr)) return
 
         viewModelScope.launch {
@@ -68,11 +76,13 @@ class MovieDetailsViewModel : ViewModel() {
                 page = 1,
                 movieId = movieId,
                 dateBefore = before,
-                dateAfter = after,
+                dateAfter = before,
+                cinemaId = cinemaId
             )
             val cleaned = mapShowings(rawList)
             _showingsByDate.update { it + (dateStr to cleaned) }
             _loadingShowtimes.value = false
+            Log.d("SHOWINGS", cleaned.toString())
         }
     }
 

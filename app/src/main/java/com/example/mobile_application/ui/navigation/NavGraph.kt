@@ -46,6 +46,23 @@ fun AppNavHost() {
         }
 
         composable(
+            "details/{movieId}/{cinemaId}",
+            arguments = listOf(
+                navArgument("movieId") { type = NavType.IntType },
+                navArgument("cinemaId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val movieId = backStackEntry.arguments?.getInt("movieId") ?: 0
+            val cinemaId = backStackEntry.arguments?.getInt("cinemaId") ?: 0
+            MovieDetailsScreen(
+                movieId = movieId,
+                cinemaId = cinemaId,
+                onShowtimeClick = { hallId, showingId ->
+                    navController.navigate("seatSelection/$hallId/$showingId")
+                }
+            )
+        }
+
+        composable(
             "seatSelection/{cinemaHallId}/{showingId}",
             arguments = listOf(
                 navArgument("cinemaHallId") { type = NavType.IntType },
@@ -76,7 +93,7 @@ fun AppNavHost() {
             MovieList(
                 cinemaId =cinemaId,
                 onMovieClick = {movieId ->
-                navController.navigate("details/$movieId")
+                navController.navigate("details/$movieId/$cinemaId")
             })
         }
     }

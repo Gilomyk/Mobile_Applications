@@ -1,5 +1,6 @@
 package com.example.mobile_application.ui.pages
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -65,6 +66,7 @@ import com.example.mobile_application.ui.theme.CrewText
 import com.example.mobile_application.ui.theme.GenrePurple
 import com.example.mobile_application.ui.theme.MetaText
 import com.example.mobile_application.ui.theme.MovieDescription
+import com.example.mobile_application.viewmodel.CinemaViewModel
 import com.example.mobile_application.viewmodel.MovieDetailsViewModel
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -74,11 +76,17 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun MovieDetailsScreen(
     movieId: Int,
+    cinemaId: Int?=null,
     onShowtimeClick: (Int, Int) -> Unit,
-    viewModel: MovieDetailsViewModel = viewModel()
+    viewModel: MovieDetailsViewModel = viewModel(),
+    cinemaViewModel: CinemaViewModel = viewModel(),
 ) {
     LaunchedEffect(movieId) {
         viewModel.fetchMovieDetails(movieId)
+        if (cinemaId == null)
+            cinemaViewModel.fetchCinemas()
+        else
+            cinemaViewModel.fetchCinema(cinemaId)
     }
 
     val movie by viewModel.movie.collectAsState()
@@ -121,6 +129,7 @@ fun MovieDetailsScreen(
                 1 -> ShowingsTab(
                     movieId = movieId,
                     viewModel = viewModel,
+                    cinemaId = cinemaId,
                     cinemas = cinemas,
                     cinemaHalls =  cinemaHalls,
                     hallTypes = hallTypes,
@@ -226,11 +235,13 @@ fun DetailsTab (m: Movie, c: MovieCrew) {
     }
 }
 
+@SuppressLint("RememberReturnType")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ShowingsTab(
     movieId: Int,
     viewModel: MovieDetailsViewModel,
+    cinemaId: Int?=null,
     cinemas: List<Cinema>,
     cinemaHalls: List<CinemaHall>,
     hallTypes: List<HallType>,
@@ -240,13 +251,44 @@ fun ShowingsTab(
 ) {
     val dates = remember { (0 until 30).map { LocalDate.now().plusDays(it.toLong()) } }
     var selectedDate by remember { mutableStateOf(dates.first()) }
+    var selectedCinema by remember { mutableStateOf<Cinema?>(null) }
+
+    LaunchedEffect(cinemaId) {
+        cinemaId?.let {
+            selectedCinema = cinemas.find { cinema -> cinema.id == it }
+        }
+    }
 
     // wczytaj seansy przy wyborze
-    LaunchedEffect(selectedDate) {
-        viewModel.loadShowingsForDate(movieId, selectedDate)
+    LaunchedEffect(selectedDate, selectedCinema) {
+        if (selectedCinema != null) {
+            viewModel.loadShowingsForDate(movieId, selectedDate, selectedCinema!!.id)
+        } else {
+            viewModel.loadShowingsForDate(movieId, selectedDate)
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        // === Wybór kina ===
+        Spacer(Modifier.height(8.dp))
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.horizontalScroll(rememberScrollState())
+        ) {
+            cinemas.forEach { cinema ->
+                Button(
+                    onClick = { selectedCinema = cinema.copy() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (cinema == selectedCinema) GenrePurple else MaterialTheme.colorScheme.surface
+                    )
+                ) {
+                    Text(cinema.name, color = MaterialTheme.colorScheme.onSurface)
+                }
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
         // DatePicker
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
             dates.forEach { date ->
@@ -266,7 +308,7 @@ fun ShowingsTab(
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
-        } else {
+        } else if (selectedCinema != null) {
             val showings = showingsByDate[selectedDate.toString()].orEmpty()
             LazyVerticalGrid(
                 columns = GridCells.Fixed(5),
@@ -275,15 +317,17 @@ fun ShowingsTab(
                 modifier = Modifier.fillMaxSize()
             ) {
                 itemsIndexed(
-                    items = showings.orEmpty(),
-                    span = { index, _ ->
-                        GridItemSpan(5)
-                    }
-                ) { index, showing ->
+                    items = showings,
+                    span = { _, _ -> GridItemSpan(5) }
+                ) { _, showing ->
                     ShowtimeCard(showing, hallTypes, onClick = {
                         onShowtimeClick(showing.hall, showing.id)
                     })
                 }
+            }
+        } else {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("Wybierz kino, aby zobaczyć seanse")
             }
         }
     }

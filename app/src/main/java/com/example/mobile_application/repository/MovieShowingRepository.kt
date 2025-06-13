@@ -18,14 +18,16 @@ class MovieShowingRepository {
         page: Int? = null,
         movieId: Int? = null,
         dateBefore: String? = null,
-        dateAfter: String? = null
+        dateAfter: String? = null,
+        cinemaId: Int? = null
     ): List<MovieShowing>? = withContext(Dispatchers.IO) {
         try {
             val response = ApiClient.movieShowingService.getMovieShowings(
                 page=page,
                 movieId=movieId,
                 dateBefore=dateBefore,
-                dateAfter=dateAfter
+                dateAfter=dateAfter,
+                cinemaId=cinemaId
             )
             if (response.isSuccessful) {
                 return@withContext response.body()?.results

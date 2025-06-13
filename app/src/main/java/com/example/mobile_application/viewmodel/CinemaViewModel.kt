@@ -32,4 +32,10 @@ class CinemaViewModel: ViewModel(){
             Log.d("CINEMA", "Cinema: ${_cinema.value}")
         }
     }
+
+    fun fetchCinemas() {
+        viewModelScope.launch {
+            _cinemas.value = cinemaRepository.fetchCinemas()!!
+        }
+    }
 }
