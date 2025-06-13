@@ -37,6 +37,9 @@ import com.example.mobile_application.viewmodel.ClosestCinemaListViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.location.LocationServices
 
+import android.os.Looper
+import com.google.android.gms.location.*
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ClosestCinemaList(
@@ -65,23 +68,17 @@ fun ClosestCinemaList(
 
     LaunchedEffect(permissionGranted) {
         if (permissionGranted) {
-            val fusedClient = LocationServices.getFusedLocationProviderClient(context)
-            if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED) {
-                fusedClient.lastLocation.addOnSuccessListener { location ->
-                    Log.d("LOCATION", "lastLocation result: $location")
-                    if (location != null) {
-                        viewModel.fetchClosestCinemas(location.latitude, location.longitude)
-                    } else {
-                        Log.w("LOCATION", "Brak lokalizacji! Nie wywołano fetchClosestCinemas()")
-                    }
-
+            requestSingleLocationUpdate(context) { location ->
+                Log.d("LOCATION", "requestLocationUpdates result: $location")
+                if (location != null) {
+                    viewModel.fetchClosestCinemas(location.latitude, location.longitude)
+                } else {
+                    Log.w("LOCATION", "Brak lokalizacji! Nie wywołano fetchClosestCinemas()")
                 }
             }
         }
     }
+
 
     if (!permissionGranted) {
         Box(
@@ -118,5 +115,47 @@ fun ClosestCinemaList(
                 }
             }
         }
+    }
+}
+
+fun requestSingleLocationUpdate(
+    context: android.content.Context,
+    onLocationReceived: (android.location.Location?) -> Unit
+) {
+    val fusedClient = LocationServices.getFusedLocationProviderClient(context)
+
+    val locationRequest = LocationRequest.Builder(
+        Priority.PRIORITY_HIGH_ACCURACY,
+        1000L
+    ).apply {
+        setMaxUpdates(1)
+    }.build()
+
+    val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(result: LocationResult) {
+            onLocationReceived(result.lastLocation)
+            fusedClient.removeLocationUpdates(this)
+        }
+
+        override fun onLocationAvailability(availability: LocationAvailability) {
+            if (!availability.isLocationAvailable) {
+                onLocationReceived(null)
+                fusedClient.removeLocationUpdates(this)
+            }
+        }
+    }
+
+    if (ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    ) {
+        fusedClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
+    } else {
+        onLocationReceived(null)
     }
 }
