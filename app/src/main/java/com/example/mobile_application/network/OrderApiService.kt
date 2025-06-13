@@ -1,8 +1,10 @@
 package com.example.mobile_application.network
 
 import com.example.mobile_application.model.Order
+import com.example.mobile_application.model.OrderPayload
 import com.example.mobile_application.model.OrderResponse
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -16,8 +18,10 @@ interface OrderApiService {
         @Query("status") status: String?
     ): Response<OrderResponse>
 
-    @POST("/api/orders")
-    suspend fun createOrder()
+    @POST("api/orders/")
+    suspend fun createOrder(
+        @Body payload: OrderPayload
+    ): Response<OrderResponse>
 
     @GET("/api/orders/{order_id}")
     suspend fun getOrderById(

@@ -9,10 +9,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.mobile_application.ui.HomeScreen
-import com.example.mobile_application.ui.pages.MovieDetailsScreen
-import com.example.mobile_application.ui.pages.SeatSelectionScreen
+import com.example.mobile_application.ui.pages.BookingSummaryScreen
 import com.example.mobile_application.ui.pages.ClosestCinemaList
+import com.example.mobile_application.ui.pages.MovieDetailsScreen
 import com.example.mobile_application.ui.pages.MovieList
+import com.example.mobile_application.ui.pages.SeatSelectionScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -75,7 +76,8 @@ fun AppNavHost() {
                 cinemaHallId = hallId,
                 showingId = showId,
                 onReserve = { seatIds ->
-                    navController.navigate("summary/${showId}/${seatIds.joinToString(",")}")
+                    val seatIdParam = seatIds.joinToString(",")
+                    navController.navigate("summary/$showId/$seatIdParam")
                 }
             )
         }
@@ -95,6 +97,25 @@ fun AppNavHost() {
                 onMovieClick = {movieId ->
                 navController.navigate("details/$movieId/$cinemaId")
             })
+        }
+
+        composable(
+            "summary/{showingId}/{seatIds}",
+            arguments = listOf(
+                navArgument("showingId"){ type = NavType.IntType },
+                navArgument("seatIds"){ type = NavType.StringType }
+            )
+        ) { back ->
+            val showingId = back.arguments!!.getInt("showingId")
+            val seatIds = back.arguments!!.getString("seatIds")!!
+                .split(",").mapNotNull { it.toIntOrNull() }
+            BookingSummaryScreen(
+                showingId = showingId,
+                seatIds = seatIds,
+                onConfirmed = { paymentUrl ->
+                    // otwórz WebView albo popBackStack
+                }
+            )
         }
     }
 }

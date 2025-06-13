@@ -88,7 +88,7 @@ data class Ticket(
     val base_price: Float,
     val seat: Int,
     val purchase_time: String,
-    val purchase_price: Float,
+    val purchase_price: Double,
     val buyer: Int,
     val discount: Int,
     val cancelled: Boolean,
@@ -106,6 +106,20 @@ data class Order(
     val amount: Int,
     val status: Int,
     val user: Int,
+    val email: String
+)
+
+data class TicketPayload(
+    val showing: Int,
+    val seat: Int,
+    val base_price: Double,
+    val purchase_price: Double,
+    val purchase_time: String,
+    val discount: Int? = null
+)
+
+data class OrderPayload(
+    val tickets_ids: List<Int>,
     val email: String
 )
 

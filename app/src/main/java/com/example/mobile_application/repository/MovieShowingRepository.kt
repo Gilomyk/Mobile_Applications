@@ -2,7 +2,6 @@ package com.example.mobile_application.repository
 
 import android.util.Log
 import com.example.mobile_application.model.MovieShowing
-import com.example.mobile_application.model.MovieShowingResponse
 import com.example.mobile_application.network.ApiClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -38,6 +37,20 @@ class MovieShowingRepository {
             Log.e(TAG, "Exception fetching movie showings: ${e.localizedMessage}")
         }
         return@withContext null
+    }
+
+    suspend fun fetchShowingById(id: Int): MovieShowing? = withContext(Dispatchers.IO) {
+        try {
+            val res = ApiClient.movieShowingService.getShowingById(id)
+            if (res.isSuccessful) {
+                return@withContext res.body()
+            } else {
+                Log.e(TAG, "fetchShowingById API error: ${res.code()}")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "fetchShowingById exception: ${e.localizedMessage}")
+        }
+        null
     }
 
     companion object {

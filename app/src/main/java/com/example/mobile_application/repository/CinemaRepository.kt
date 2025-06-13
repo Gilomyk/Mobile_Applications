@@ -101,6 +101,20 @@ class CinemaRepository {
         return@withContext allHalls
     }
 
+    suspend fun fetchHallById(id: Int): CinemaHall? = withContext(Dispatchers.IO) {
+        try {
+            val res = ApiClient.cinemaService.getHallById(id)
+            if (res.isSuccessful) {
+                return@withContext res.body()
+            } else {
+                Log.e(TAG, "fetchHallById API error: ${res.code()}")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "fetchHallById exception: ${e.localizedMessage}")
+        }
+        null
+    }
+
     suspend fun fetchHallTypes(): List<HallType>? = withContext(Dispatchers.IO) {
         try {
             val response = ApiClient.cinemaService.getHallTypes()
@@ -127,5 +141,36 @@ class CinemaRepository {
             Log.e("MovieRepository", "Exception: ${e.localizedMessage}")
         }
         return@withContext null
+    }
+
+    suspend fun fetchSeatById(id: Int): Seat? = withContext(Dispatchers.IO) {
+        try {
+            val res = ApiClient.cinemaService.getSeatById(id)
+            if (res.isSuccessful) {
+                return@withContext res.body()
+            } else {
+                Log.e(TAG, "fetchSeatById API error: ${res.code()}")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "fetchSeatById exception: ${e.localizedMessage}")
+        }
+        null
+    }
+
+    /**
+     * Pobiera listę miejsc na podstawie ich ID-ów, wykonując osobne zapytanie dla każdego.
+     */
+    suspend fun fetchSeatsByIds(ids: List<Int>): List<Seat> = withContext(Dispatchers.IO) {
+        ids.mapNotNull { id ->
+            try {
+                fetchSeatById(id)
+            } catch (_: Exception) {
+                null
+            }
+        }
+    }
+
+    companion object {
+        private const val TAG = "CinemaRepository"
     }
 }
