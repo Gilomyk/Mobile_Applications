@@ -7,11 +7,15 @@ import com.example.mobile_application.model.HallTypeResponse
 import com.example.mobile_application.model.SeatResponse
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface CinemaApiService {
     @GET("/api/cinemas")
     suspend fun getCinemas(): Response<CinemaResponse>
+
+    @GET("/api/cinemas/{cinemaId}")
+    suspend fun getCinema(@Path("cinemaId") cinemaId: Int): Response <Cinema>
 
     @GET("/api/cinema_halls")
     suspend fun getCinemaHalls(@Query("page") page: Int?, @Query("cinema") cinemaId: Int?, ): Response<CinemaHallResponse>

@@ -12,6 +12,7 @@ import com.example.mobile_application.ui.HomeScreen
 import com.example.mobile_application.ui.pages.MovieDetailsScreen
 import com.example.mobile_application.ui.pages.SeatSelectionScreen
 import com.example.mobile_application.ui.pages.ClosestCinemaList
+import com.example.mobile_application.ui.pages.MovieList
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -63,7 +64,20 @@ fun AppNavHost() {
         }
 
         composable("location") {
-            ClosestCinemaList()
+            ClosestCinemaList(onCinemaClick = {cinemaId ->
+                navController.navigate("movieListCinema/$cinemaId")
+            })
+        }
+
+        composable("movieListCinema/{cinemaId}",
+                arguments = listOf(navArgument("cinemaId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val cinemaId = backStackEntry.arguments?.getInt("cinemaId") ?: 0
+            MovieList(
+                cinemaId =cinemaId,
+                onMovieClick = {movieId ->
+                navController.navigate("details/$movieId")
+            })
         }
     }
 }

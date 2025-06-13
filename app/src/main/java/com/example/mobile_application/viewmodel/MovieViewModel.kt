@@ -20,4 +20,11 @@ class MovieViewModel : ViewModel() {
             _movies.value = result ?: emptyList()
         }
     }
+
+    fun fetchMoviesByCinema(cinemaId: Int) {
+        viewModelScope.launch {
+            val result = repository.fetchMoviesByCinema(cinemaId)
+            _movies.value = result ?: emptyList()
+        }
+    }
 }
