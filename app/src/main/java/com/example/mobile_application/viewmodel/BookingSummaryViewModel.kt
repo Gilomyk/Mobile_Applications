@@ -1,7 +1,9 @@
 package com.example.mobile_application.viewmodel
 
+import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_application.model.CreateOrderResponse
@@ -20,12 +22,12 @@ import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
 // ViewModel
-class BookingSummaryViewModel() : ViewModel() {
-    private val cinemaRepository = CinemaRepository()
-    private val movieRepository = MovieRepository()
-    private val movieShowingRepository = MovieShowingRepository()
-    private val ticketRepository = TicketRepository()
-    private val orderRepository = OrderRepository()
+class BookingSummaryViewModel(application: Application): AndroidViewModel(application){
+    private val cinemaRepository = CinemaRepository(application)
+    private val movieRepository = MovieRepository(application)
+    private val movieShowingRepository = MovieShowingRepository(application)
+    private val ticketRepository = TicketRepository(application)
+    private val orderRepository = OrderRepository(application)
 
     private val _discounts = MutableStateFlow<List<TicketDiscount>>(emptyList())
     val discounts: StateFlow<List<TicketDiscount>> = _discounts

@@ -16,6 +16,7 @@ import androidx.navigation.navArgument
 import com.example.mobile_application.ui.HomeScreen
 import com.example.mobile_application.ui.pages.BookingSummaryScreen
 import com.example.mobile_application.ui.pages.ClosestCinemaList
+import com.example.mobile_application.ui.pages.LoginScreen
 import com.example.mobile_application.ui.pages.MovieDetailsScreen
 import com.example.mobile_application.ui.pages.MovieList
 import com.example.mobile_application.ui.pages.PaymentSuccessScreen
@@ -37,6 +38,10 @@ fun AppNavHost() {
                 onLocationClick = {
                     navController.navigate("location")
                 },
+                onLoginClick = {
+                    navController.navigate("login")
+                },
+                onProfileClick = {}
             )
         }
 
@@ -173,5 +178,12 @@ fun AppNavHost() {
             )
         }
 
+        composable("login") {
+            LoginScreen(
+                onLoginSuccess = {
+                    navController.navigate("home")
+                }
+            )
+        }
     }
 }

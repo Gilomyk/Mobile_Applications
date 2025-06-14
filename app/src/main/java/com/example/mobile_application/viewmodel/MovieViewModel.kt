@@ -1,5 +1,7 @@
 package com.example.mobile_application.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,8 +10,8 @@ import com.example.mobile_application.model.Movie
 import com.example.mobile_application.repository.MovieRepository
 import kotlinx.coroutines.launch
 
-class MovieViewModel : ViewModel() {
-    private val repository = MovieRepository()
+class MovieViewModel(application: Application): AndroidViewModel(application){
+    private val repository = MovieRepository(application)
 
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: LiveData<List<Movie>> = _movies

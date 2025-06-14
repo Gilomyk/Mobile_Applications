@@ -1,14 +1,18 @@
 package com.example.mobile_application.repository
 
+import android.content.Context
 import android.util.Log
 import com.example.mobile_application.model.Ticket
 import com.example.mobile_application.model.TicketDiscount
 import com.example.mobile_application.model.TicketPayload
 import com.example.mobile_application.network.ApiClient
+import com.google.android.gms.common.api.Api
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class TicketRepository {
+class TicketRepository(private val context: Context) {
+    private val api = ApiClient.create(context).ticketService
+
     suspend fun fetchTickets(
         page: Int? = null,
         user: Int? = null,
@@ -16,7 +20,7 @@ class TicketRepository {
         showing: Int?
     ): List<Ticket>? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.ticketService.getTickets(
+            val response = api.getTickets(
                 page=page,
                 userId=user,
                 ordering=ordering,
@@ -34,7 +38,7 @@ class TicketRepository {
 
     suspend fun createTicket(payload: TicketPayload): Ticket? = withContext(Dispatchers.IO) {
         try {
-            val res = ApiClient.ticketService.createTicket(payload)
+            val res = api.createTicket(payload)
             if (res.isSuccessful) return@withContext res.body()
             else Log.e(TAG, "createTicket API error: ${res.code()}")
         } catch (e: Exception) {
@@ -45,7 +49,7 @@ class TicketRepository {
 
     suspend fun fetchActiveDiscounts(): List<TicketDiscount>? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.ticketService.getActiveDiscounts()
+            val response = api.getActiveDiscounts()
             if (response.isSuccessful) {
                 return@withContext response.body()
             } else {

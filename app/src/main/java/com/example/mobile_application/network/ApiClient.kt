@@ -1,60 +1,49 @@
 package com.example.mobile_application.network
 
+import AuthInterceptor
+import android.content.Context
 import com.example.mobile_application.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.math.log
+
+data class ApiClientInterface(
+    val movieService: MovieApiService,
+    val ticketService: TicketApiService,
+    val cinemaService: CinemaApiService,
+    val movieShowingService: MovieShowingApiService,
+    val orderService: OrderApiService,
+    val userService: UserApiService
+)
 
 object ApiClient {
-    /*TODO*/
-//    Ogarnąć zdjęcia na serwerze
     private const val BASE_URL = "https://cinemaland.pl/"
-//    private const val BASE_URL = "http://10.0.2.2:8000/"
 
-
-
-    private const val apiKey = BuildConfig.API_KEY
-
-    private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
-    }
-
-    private val client = OkHttpClient.Builder()
-        // Interceptor do dodawania Api-Key do wszystkich endpointów, z wyjątkiem getProfile
-        .addInterceptor { chain ->
-            val originalRequest = chain.request()
-
-            // Jeśli zapytanie to getProfile, dodaj nagłówek Bearer
-            if (originalRequest.url.toString().contains("/profile")) {
-                val token = "giveToken"/*TODO: give token*/
-                val modifiedRequest = originalRequest.newBuilder()
-                    .addHeader("Authorization", "Bearer $token")
-                    .build()
-                chain.proceed(modifiedRequest)
-            } else {
-                // Dla pozostałych endpointów dodaj Api-Key
-                val modifiedRequest = originalRequest.newBuilder()
-                    .addHeader("Authorization", "Api-Key $apiKey")
-                    .build()
-                chain.proceed(modifiedRequest)
-            }
+    fun create(context: Context): ApiClientInterface {
+        val logginInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
         }
-        .addInterceptor(loggingInterceptor)
-        .build()
 
+        val client = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(context))
+            .addInterceptor(logginInterceptor)
+            .build()
 
-    val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(client)
-        .build()
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
 
-    val movieService: MovieApiService = retrofit.create(MovieApiService::class.java)
-    val ticketService: TicketApiService = retrofit.create(TicketApiService::class.java)
-    val cinemaService: CinemaApiService = retrofit.create(CinemaApiService::class.java)
-    val movieShowingService: MovieShowingApiService = retrofit.create(MovieShowingApiService::class.java)
-    val orderService: OrderApiService = retrofit.create(OrderApiService::class.java)
-    val userService: UserApiService = retrofit.create(UserApiService::class.java)
-
+        return ApiClientInterface(
+            retrofit.create(MovieApiService::class.java),
+            retrofit.create(TicketApiService::class.java),
+            retrofit.create(CinemaApiService::class.java),
+            retrofit.create(MovieShowingApiService::class.java),
+            retrofit.create(OrderApiService::class.java),
+            retrofit.create(UserApiService::class.java),
+        )
+    }
 }

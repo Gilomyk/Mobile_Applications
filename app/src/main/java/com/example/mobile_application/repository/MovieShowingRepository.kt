@@ -1,18 +1,21 @@
 package com.example.mobile_application.repository
 
+import android.content.Context
 import android.util.Log
 import com.example.mobile_application.model.MovieShowing
 import com.example.mobile_application.network.ApiClient
+import com.google.android.gms.common.api.Api
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class MovieShowingRepository {
-
+class MovieShowingRepository(private val context: Context) {
     /**
      * Pobiera wszystkie seanse filmowe z paginacją.
      * @param page numer strony (opcjonalny)
      * @return lista seansów filmowych lub null w przypadku błędu
      */
+    private val api = ApiClient.create(context).movieShowingService
+
     suspend fun fetchMovieShowings(
         page: Int? = null,
         movieId: Int? = null,
@@ -21,7 +24,7 @@ class MovieShowingRepository {
         cinemaId: Int? = null
     ): List<MovieShowing>? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.movieShowingService.getMovieShowings(
+            val response = api.getMovieShowings(
                 page=page,
                 movieId=movieId,
                 dateBefore=dateBefore,
@@ -41,7 +44,7 @@ class MovieShowingRepository {
 
     suspend fun fetchShowingById(id: Int): MovieShowing? = withContext(Dispatchers.IO) {
         try {
-            val res = ApiClient.movieShowingService.getShowingById(id)
+            val res = api.getShowingById(id)
             if (res.isSuccessful) {
                 return@withContext res.body()
             } else {

@@ -1,6 +1,8 @@
 package com.example.mobile_application.viewmodel
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_application.model.Cinema
@@ -9,8 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class CinemaViewModel: ViewModel(){
-    private val cinemaRepository = CinemaRepository()
+class CinemaViewModel(application: Application): AndroidViewModel(application){
+    private val cinemaRepository = CinemaRepository(application)
 
     private val _cinemas = MutableStateFlow<List<Cinema>>(emptyList())
     val cinemas: StateFlow<List<Cinema>> = _cinemas

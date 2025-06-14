@@ -16,8 +16,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobile_application.network.ApiClient
@@ -37,17 +41,25 @@ import com.example.mobile_application.viewmodel.MovieViewModel
 fun HomeScreen(
     viewModel: MovieViewModel = viewModel(),
     onMovieClick: (Int) -> Unit,
-    onLocationClick: () -> Unit) {
+    onLocationClick: () -> Unit,
+    onLoginClick: () -> Unit,
+    onProfileClick: () -> Unit
+) {
     var searchQuery by remember { mutableStateOf("") }
+    var isLogged by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     //Coś do testów API
     LaunchedEffect(Unit) {
         try {
-            val response = ApiClient.userService.getProfile()
+            val api = ApiClient.create(context).userService
+            val response = api.getProfile()
             Log.d("API_TEST", "Response headers: ${response.headers()}")
             Log.d("API_TEST", "HTTP message: ${response.code()} - ${response.message()}")
             if (response.isSuccessful) {
                 Log.d("API_TEST", "Response: ${response.body()}")
+                isLogged = true
             } else {
                 Log.e("API_TEST", "HTTP error: ${response.code()} - ${response.message()}")
                 Log.e("API_TEST", "Response body: ${response.errorBody()?.string()}")
@@ -91,6 +103,29 @@ fun HomeScreen(
                     imageVector = Icons.Default.LocationOn,
                     contentDescription = "Lokalizacja"
                 )
+            }
+
+            if (isLogged) {
+                IconButton(
+                    onClick = {
+                        onProfileClick() // Przejdź do profilu
+                        Log.d("PROFILE_BUTTON", "Profile button clicked")
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person, // Ikona profilu
+                        contentDescription = "Profil"
+                    )
+                }
+            } else {
+                TextButton(
+                    onClick = {
+                        onLoginClick()
+                        Log.d("LOGIN_BUTTON", "Login button clicked")
+                    }
+                ) {
+                    Text("Zaloguj się")
+                }
             }
         }
 

@@ -1,5 +1,6 @@
 package com.example.mobile_application.repository
 
+import android.content.Context
 import android.util.Log
 import com.example.mobile_application.model.Cinema
 import com.example.mobile_application.model.CinemaHall
@@ -9,10 +10,12 @@ import com.example.mobile_application.network.ApiClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class CinemaRepository {
+class CinemaRepository(private val context: Context) {
+    private val api = ApiClient.create(context).cinemaService
+
     suspend fun fetchCinemas(): List<Cinema>? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.cinemaService.getCinemas()
+            val response = api.getCinemas()
             if (response.isSuccessful) {
                 return@withContext response.body()?.results
             } else {
@@ -26,7 +29,7 @@ class CinemaRepository {
 
     suspend fun fetchClosestCinemas(latitude: Double, longitude: Double, amount: Int?=null): List<Cinema>? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.cinemaService.getClosestCinemas(
+            val response = api.getClosestCinemas(
                 latitude =latitude,
                 longitude =longitude,
                 amount =amount)
@@ -43,7 +46,7 @@ class CinemaRepository {
 
     suspend fun fetchCinema(cinemaId: Int): Cinema? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.cinemaService.getCinema(cinemaId)
+            val response = api.getCinema(cinemaId)
             if (response.isSuccessful) {
                 return@withContext response.body()
             } else {
@@ -58,7 +61,7 @@ class CinemaRepository {
 
     suspend fun fetchCinemaHalls(cinemaId: Int?): List<CinemaHall>? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.cinemaService.getCinemaHalls(page = null, cinemaId = cinemaId)
+            val response = api.getCinemaHalls(page = null, cinemaId = cinemaId)
             if (response.isSuccessful) {
                 return@withContext response.body()?.results
             } else {
@@ -77,7 +80,7 @@ class CinemaRepository {
 
         while (hasMorePages) {
             try {
-                val response = ApiClient.cinemaService.getCinemaHalls(page = currentPage, cinemaId = cinemaId)
+                val response = api.getCinemaHalls(page = currentPage, cinemaId = cinemaId)
                 if (response.isSuccessful) {
                     val body = response.body()
                     if (body != null) {
@@ -103,7 +106,7 @@ class CinemaRepository {
 
     suspend fun fetchHallById(id: Int): CinemaHall? = withContext(Dispatchers.IO) {
         try {
-            val res = ApiClient.cinemaService.getHallById(id)
+            val res = api.getHallById(id)
             if (res.isSuccessful) {
                 return@withContext res.body()
             } else {
@@ -117,7 +120,7 @@ class CinemaRepository {
 
     suspend fun fetchHallTypes(): List<HallType>? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.cinemaService.getHallTypes()
+            val response = api.getHallTypes()
             if (response.isSuccessful) {
                 return@withContext response.body()?.results
             } else {
@@ -131,7 +134,7 @@ class CinemaRepository {
 
     suspend fun fetchAllSeats(hallId: Int): List<Seat>? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.cinemaService.getSeats(page = null, hallId = hallId)
+            val response = api.getSeats(page = null, hallId = hallId)
             if (response.isSuccessful) {
                 return@withContext response.body()?.results
             } else {
@@ -145,7 +148,7 @@ class CinemaRepository {
 
     suspend fun fetchSeatById(id: Int): Seat? = withContext(Dispatchers.IO) {
         try {
-            val res = ApiClient.cinemaService.getSeatById(id)
+            val res = api.getSeatById(id)
             if (res.isSuccessful) {
                 return@withContext res.body()
             } else {

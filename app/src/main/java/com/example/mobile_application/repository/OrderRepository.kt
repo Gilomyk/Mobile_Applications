@@ -1,5 +1,6 @@
 package com.example.mobile_application.repository
 
+import android.content.Context
 import android.util.Log
 import com.example.mobile_application.model.CreateOrderResponse
 import com.example.mobile_application.model.Order
@@ -8,10 +9,12 @@ import com.example.mobile_application.network.ApiClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class OrderRepository {
+class OrderRepository(private val context: Context) {
+    private val api = ApiClient.create(context).orderService
+
     suspend fun fetchOrders(page: Int?, user: Int?, status: String?): List<Order>? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.orderService.getOrders(
+            val response = api.getOrders(
                 page=page,
                 userId=user,
                 status=status
@@ -30,7 +33,7 @@ class OrderRepository {
     suspend fun postOrder(ticketIds: List<Int>, email: String): CreateOrderResponse? = withContext(Dispatchers.IO) {
         try {
             val payload = OrderPayload(ticketIds, email)
-            val response = ApiClient.orderService.createOrder(payload)
+            val response = api.createOrder(payload)
             if (response.isSuccessful) {
                 return@withContext response.body()
             } else {
@@ -44,7 +47,7 @@ class OrderRepository {
 
     suspend fun fetchOrderById(orderId: Int): Order? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.orderService.getOrderById(orderId)
+            val response = api.getOrderById(orderId)
             if (response.isSuccessful) {
                 return@withContext response.body()
             } else {

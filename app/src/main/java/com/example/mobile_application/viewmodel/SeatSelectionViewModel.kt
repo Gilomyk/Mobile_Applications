@@ -1,5 +1,7 @@
 package com.example.mobile_application.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_application.model.Seat
@@ -11,10 +13,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SeatSelectionViewModel() : ViewModel() {
+class SeatSelectionViewModel(application: Application): AndroidViewModel(application){
 
-    private val cinemaRepository = CinemaRepository()
-    private val ticketRepository = TicketRepository()
+    private val cinemaRepository = CinemaRepository(application)
+    private val ticketRepository = TicketRepository(application)
     
     private val _seats = MutableStateFlow<List<Seat>>(emptyList())
     val seats: StateFlow<List<Seat>> = _seats

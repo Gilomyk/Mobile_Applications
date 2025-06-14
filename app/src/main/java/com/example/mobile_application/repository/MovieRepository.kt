@@ -1,5 +1,6 @@
 package com.example.mobile_application.repository
 
+import android.content.Context
 import android.util.Log
 import com.example.mobile_application.model.Movie
 import com.example.mobile_application.model.MovieCrew
@@ -7,11 +8,12 @@ import com.example.mobile_application.network.ApiClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class MovieRepository {
+class MovieRepository(private val context: Context) {
+    private val api = ApiClient.create(context).movieService
 
     suspend fun fetchMovies(title: String?): List<Movie>? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.movieService.getMovies(title=title)
+            val response = api.getMovies(title=title)
             if (response.isSuccessful) {
                 return@withContext response.body()?.results
             } else {
@@ -25,7 +27,7 @@ class MovieRepository {
 
     suspend fun fetchMoviesByCinema(cinemaId: Int): List<Movie>? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.movieService.getMovies(cinemaId=cinemaId)
+            val response = api.getMovies(cinemaId=cinemaId)
             if (response.isSuccessful) {
                 return@withContext response.body()?.results
             } else {
@@ -39,7 +41,7 @@ class MovieRepository {
 
     suspend fun fetchMovieById(movieId: Int): Movie? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.movieService.getMovieById(movieId)
+            val response = api.getMovieById(movieId)
             if (response.isSuccessful) {
                 return@withContext response.body()
             } else {
@@ -53,7 +55,7 @@ class MovieRepository {
 
     suspend fun fetchMovieCrews(): List<MovieCrew>? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.movieService.getMovieCrews(page=null)
+            val response = api.getMovieCrews(page=null)
             if (response.isSuccessful) {
                 return@withContext response.body()?.results
             } else {
@@ -67,7 +69,7 @@ class MovieRepository {
 
     suspend fun fetchMovieCrewById(movieId: Int): MovieCrew? = withContext(Dispatchers.IO) {
         try {
-            val response = ApiClient.movieService.getMovieCrewById(movieId)
+            val response = api.getMovieCrewById(movieId)
             if (response.isSuccessful) {
                 return@withContext response.body()
             } else {

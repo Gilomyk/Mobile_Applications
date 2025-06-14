@@ -133,7 +133,3 @@ data class User(
 // - /profile
 // - /token
 // - /register
-
-data class Token(
-    val token: String
-)
