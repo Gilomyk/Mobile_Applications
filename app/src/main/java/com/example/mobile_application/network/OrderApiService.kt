@@ -1,5 +1,6 @@
 package com.example.mobile_application.network
 
+import com.example.mobile_application.model.CreateOrderResponse
 import com.example.mobile_application.model.Order
 import com.example.mobile_application.model.OrderPayload
 import com.example.mobile_application.model.OrderResponse
@@ -21,7 +22,7 @@ interface OrderApiService {
     @POST("api/orders/")
     suspend fun createOrder(
         @Body payload: OrderPayload
-    ): Response<OrderResponse>
+    ): Response<CreateOrderResponse>
 
     @GET("/api/orders/{order_id}")
     suspend fun getOrderById(

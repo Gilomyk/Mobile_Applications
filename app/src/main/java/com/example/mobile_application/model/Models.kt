@@ -102,9 +102,9 @@ data class PaymentStatus(
 
 data class Order(
     val id: Int,
-    val tickets: List<Int>,
+    val tickets: List<Ticket>,
     val amount: Int,
-    val status: Int,
+    val status: PaymentStatus,
     val user: Int,
     val email: String
 )
@@ -115,7 +115,8 @@ data class TicketPayload(
     val base_price: Double,
     val purchase_price: Double,
     val purchase_time: String,
-    val discount: Int? = null
+    val discount: Int? = null,
+    val buyer: Int? = null
 )
 
 data class OrderPayload(

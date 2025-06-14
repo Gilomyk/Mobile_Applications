@@ -4,7 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mobile_application.model.OrderResponse
+import com.example.mobile_application.model.CreateOrderResponse
 import com.example.mobile_application.model.Seat
 import com.example.mobile_application.model.TicketDiscount
 import com.example.mobile_application.model.TicketPayload
@@ -59,7 +59,7 @@ class BookingSummaryViewModel() : ViewModel() {
         }
     }
 
-    suspend fun postOrder(ticketIds: List<Int>, email: String): OrderResponse? {
+    suspend fun postOrder(ticketIds: List<Int>, email: String): CreateOrderResponse? {
         return orderRepository.postOrder(ticketIds, email)
     }
 

@@ -30,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobile_application.model.TicketPayload
 import com.example.mobile_application.viewmodel.BookingSummaryViewModel
+import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
 
 // Composable
 @RequiresApi(Build.VERSION_CODES.O)
@@ -82,6 +85,7 @@ fun BookingSummaryScreen(
     }
 
     val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         Modifier
@@ -202,7 +206,40 @@ fun BookingSummaryScreen(
         Button(
             onClick = {
                 isLoading = true
-                // launch coroutine: post tickets, then post order, then onConfirmed(paymentUrl)
+                error = null
+
+                // Coroutine do tworzenia biletów i zamówienia
+                coroutineScope.launch {
+                    try {
+                        val now = OffsetDateTime.now().toString() // lub odpowiednik z ThreeTenABP
+                        val ticketPayloads = tickets.map {
+                            it.copy(purchase_time = now)
+                        }
+
+                        val ticketIds = viewModel.postTickets(ticketPayloads)
+
+                        if (ticketIds.isEmpty()) {
+                            error = "Ticket creation failed."
+                            isLoading = false
+                            return@launch
+                        }
+
+                        val orderResponse = viewModel.postOrder(ticketIds, email)
+                        if (orderResponse == null) {
+                            error = "Order creation failed."
+                            isLoading = false
+                            return@launch
+                        }
+
+                        // Gotowe – wywołaj callback z URLem
+                        onConfirmed(orderResponse.payment_url)
+
+                    } catch (e: Exception) {
+                        error = "Unexpected error: ${e.localizedMessage}"
+                    } finally {
+                        isLoading = false
+                    }
+                }
             },
             enabled = !isLoading,
             modifier = Modifier

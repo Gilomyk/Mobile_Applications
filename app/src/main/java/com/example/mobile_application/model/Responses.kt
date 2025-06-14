@@ -84,6 +84,12 @@ data class OrderResponse(
     val results: List<Order>
 )
 
+data class CreateOrderResponse(
+    val order: Order,
+    val payment_id: String,
+    val payment_url: String,
+)
+
 //data class UserResponse(
 //    val id: Int,
 //    val username: String,
