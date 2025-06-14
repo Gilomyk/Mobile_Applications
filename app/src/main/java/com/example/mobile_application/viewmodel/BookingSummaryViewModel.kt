@@ -1,5 +1,7 @@
 package com.example.mobile_application.viewmodel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_application.model.OrderResponse
@@ -14,6 +16,8 @@ import com.example.mobile_application.repository.TicketRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 
 // ViewModel
 class BookingSummaryViewModel() : ViewModel() {
@@ -59,11 +63,18 @@ class BookingSummaryViewModel() : ViewModel() {
         return orderRepository.postOrder(ticketIds, email)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun loadContext(showingId: Int, seatIds: List<Int>) {
         // 1) fetch showing → extract date, time, price, hallId
         val showing = movieShowingRepository.fetchShowingById(showingId)!!
-        _date.value = showing.date
-        _time.value = showing.date
+        val inputFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+        val outputDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        val outputTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+        val parsedDateTime = OffsetDateTime.parse(showing.date, inputFormatter)
+
+        _date.value = parsedDateTime.format(outputDateFormatter)
+        _time.value = parsedDateTime.format(outputTimeFormatter)
         _showingPrice.value = showing.ticket_price.toDouble()
         // 2) fetch hall → cinemaId
         val hall = cinemaRepository.fetchHallById(showing.hall)!!

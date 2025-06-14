@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,10 +63,8 @@ import com.example.mobile_application.model.MovieCrew
 import com.example.mobile_application.model.MovieShowing
 import com.example.mobile_application.ui.theme.CrewBg
 import com.example.mobile_application.ui.theme.CrewBorderAccent
-import com.example.mobile_application.ui.theme.CrewText
 import com.example.mobile_application.ui.theme.GenrePurple
-import com.example.mobile_application.ui.theme.MetaText
-import com.example.mobile_application.ui.theme.MovieDescription
+import com.example.mobile_application.ui.theme.getMetaTextColor
 import com.example.mobile_application.viewmodel.CinemaViewModel
 import com.example.mobile_application.viewmodel.MovieDetailsViewModel
 import java.time.LocalDate
@@ -219,7 +218,7 @@ fun DetailsTab (m: Movie, c: MovieCrew) {
         SectionBlock(title = "Opis") {
             Text(
                 text = m.description,
-                color = MovieDescription,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 16.sp,
                 lineHeight = 24.sp
             )
@@ -336,7 +335,7 @@ fun ShowingsTab(
 @Composable
 fun MetadataItem(label: String, value: String) {
     Column {
-        Text(text = label, fontSize = 14.sp, color = MetaText)
+        Text(text = label, fontSize = 14.sp, color = getMetaTextColor(isSystemInDarkTheme()))
         Text(text = value, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onBackground)
     }
 }
@@ -375,7 +374,7 @@ fun CrewInfoItem(label: String, value: String?) {
                     withStyle(style = SpanStyle(color = CrewBorderAccent, fontWeight = FontWeight.SemiBold)) {
                         append("$label: ")
                     }
-                    withStyle(style = SpanStyle(color = CrewText)) {
+                    withStyle(style = SpanStyle(MaterialTheme.colorScheme.onBackground)) {
                         append(value)
                     }
                 },

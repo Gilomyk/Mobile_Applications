@@ -1,5 +1,7 @@
 package com.example.mobile_application.ui.pages
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,10 +37,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobile_application.model.TicketPayload
-import com.example.mobile_application.ui.theme.MetaText
 import com.example.mobile_application.viewmodel.BookingSummaryViewModel
 
 // Composable
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookingSummaryScreen(
@@ -126,6 +128,7 @@ fun BookingSummaryScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             tickets.forEachIndexed { idx, ticket ->
+                val seatInfo = seats.find { it.id == ticket.seat }
                 Card(
                     Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
@@ -133,11 +136,11 @@ fun BookingSummaryScreen(
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                             Text("Row", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
-                            Text(ticket.seat.toString(), style = MaterialTheme.typography.bodyMedium)
+                            Text(seatInfo?.row?.toString() ?: "-", style = MaterialTheme.typography.bodyMedium)
                         }
                         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                             Text("Seat", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
-                            Text(ticket.seat.toString(), style = MaterialTheme.typography.bodyMedium)
+                            Text(seatInfo?.number?.toString() ?: "-", style = MaterialTheme.typography.bodyMedium)
                         }
                         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                             Text("Type", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
@@ -181,7 +184,7 @@ fun BookingSummaryScreen(
 
         // Total & email
         val total = tickets.sumOf { it.purchase_price }
-        Text("Total: ${total.toInt()} PLN", style = MaterialTheme.typography.headlineSmall, color = MetaText, modifier = Modifier.padding(8.dp))
+        Text("Total: ${total.toInt()} PLN", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(8.dp))
 
         OutlinedTextField(
             value = email,

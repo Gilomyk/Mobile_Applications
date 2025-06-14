@@ -2,6 +2,8 @@ package com.example.mobile_application.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+var isDarkTheme = false
+
 // Dark mode colors
 //val DarkBgHeader       = Color(0xFF151A28)
 //val DarkShadow         = Color(0x4D000000)
@@ -24,17 +26,19 @@ val OnLightBg         = Color(0xFF000000)
 //val DurationText      = Color(0xFFFFFFFF)
 
 // Metadata & genres
-val MetaText          = Color(0xFFADB5BD)
-val MovieDescription = Color(0xFFE9ECEF)
+val LightMetaText = Color(0xFF4A4A4A)
+val DarkMetaText = Color(0xFFADB5BD)
 val GenrePurple       = AccentPurple
 
 // Crew info
 val CrewBg            = Color(0x0AFFFFFF)
 val CrewBorderAccent  = Color(0xFFFACC15)
-val CrewText          = Color(0xFFF1F1F1)
 
 // Seats
 val JustTakenColor = Color(0xFFff5555)
 val TakenColor = Color(0xFF73138b)
 val SelectedColor = Color(0xFF4318d1)
 val AvailableColor = Color(0xFF1e2433)
+
+fun getMetaTextColor(darkTheme: Boolean): Color =
+    if (darkTheme) DarkMetaText else LightMetaText

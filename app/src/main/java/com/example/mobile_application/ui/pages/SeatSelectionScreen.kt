@@ -35,7 +35,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobile_application.ui.theme.AccentPurple
 import com.example.mobile_application.ui.theme.AvailableColor
 import com.example.mobile_application.ui.theme.JustTakenColor
-import com.example.mobile_application.ui.theme.MetaText
 import com.example.mobile_application.ui.theme.SelectedColor
 import com.example.mobile_application.ui.theme.TakenColor
 import com.example.mobile_application.viewmodel.SeatSelectionViewModel
@@ -118,7 +117,7 @@ fun SeatSelectionScreen(
                             Text(
                                 text = "${idx + 1}",
                                 textAlign = TextAlign.Center,
-                                color = MetaText
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         }
                     }
@@ -134,7 +133,7 @@ fun SeatSelectionScreen(
                     ) {
                         Text(
                             "$rowNum",
-                            color = MetaText,
+                            color = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.width(32.dp),
                             fontWeight = FontWeight.Bold
                         )
