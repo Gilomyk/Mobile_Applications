@@ -103,7 +103,7 @@ data class PaymentStatus(
 data class Order(
     val id: Int,
     val tickets: List<Ticket>,
-    val amount: Int,
+    val amount: Double,
     val status: PaymentStatus,
     val user: Int,
     val email: String

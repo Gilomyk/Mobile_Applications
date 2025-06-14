@@ -1,8 +1,13 @@
 package com.example.mobile_application.ui.navigation
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toUri
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,6 +18,8 @@ import com.example.mobile_application.ui.pages.BookingSummaryScreen
 import com.example.mobile_application.ui.pages.ClosestCinemaList
 import com.example.mobile_application.ui.pages.MovieDetailsScreen
 import com.example.mobile_application.ui.pages.MovieList
+import com.example.mobile_application.ui.pages.PaymentSuccessScreen
+import com.example.mobile_application.ui.pages.PaymentWebViewScreen
 import com.example.mobile_application.ui.pages.SeatSelectionScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -113,9 +120,58 @@ fun AppNavHost() {
                 showingId = showingId,
                 seatIds = seatIds,
                 onConfirmed = { paymentUrl ->
-                    // otwórz WebView albo popBackStack
+                    val encodedUrl = Uri.encode(paymentUrl)
+                    navController.navigate("payment_web/$encodedUrl")
                 }
             )
         }
+
+        // wersja przeglądarkowa
+        composable(
+            "payment/{url}",
+            arguments = listOf(navArgument("url") { type = NavType.StringType })
+        ) { entry ->
+            val url = Uri.decode(entry.arguments?.getString("url")!!)
+            val context = LocalContext.current
+
+            // Otwarcie przeglądarki (prosto i skutecznie)
+            LaunchedEffect(url) {
+                val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                context.startActivity(intent)
+
+                // Opcjonalnie wróć po chwili lub ręcznie
+                navController.popBackStack() // jeśli chcesz wrócić
+            }
+        }
+
+        // Wersja WebView
+        composable(
+            "payment_web/{url}",
+            arguments = listOf(navArgument("url") { type = NavType.StringType })
+        ) { entry ->
+            val url = Uri.decode(entry.arguments?.getString("url")!!)
+            PaymentWebViewScreen(
+                paymentUrl = url,
+                onSuccess = {
+                    navController.navigate("payment_success") {
+                        popUpTo("summary") { inclusive = true }
+                    }
+                },
+                onCancel = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable("payment_success") {
+            PaymentSuccessScreen(
+                onReturnHome = {
+                    navController.navigate("home") {
+                        popUpTo(0) { inclusive = true } // czyści stack jeśli chcesz
+                    }
+                }
+            )
+        }
+
     }
 }
