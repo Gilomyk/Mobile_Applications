@@ -22,7 +22,7 @@ interface CinemaApiService {
     @GET("/api/cinema_halls")
     suspend fun getCinemaHalls(@Query("page") page: Int?, @Query("cinema") cinemaId: Int?, ): Response<CinemaHallResponse>
 
-    @GET("api/cinema-halls/{id}/")
+    @GET("api/cinema_halls/{id}/")
     suspend fun getHallById(
         @Path("id") id: Int
     ): Response<CinemaHall>
