@@ -21,6 +21,7 @@ import com.example.mobile_application.ui.pages.MovieDetailsScreen
 import com.example.mobile_application.ui.pages.MovieList
 import com.example.mobile_application.ui.pages.PaymentSuccessScreen
 import com.example.mobile_application.ui.pages.PaymentWebViewScreen
+import com.example.mobile_application.ui.pages.ProfileScreen
 import com.example.mobile_application.ui.pages.QRScreenWithPermission
 import com.example.mobile_application.ui.pages.RegisterScreen
 import com.example.mobile_application.ui.pages.SeatSelectionScreen
@@ -35,8 +36,6 @@ fun AppNavHost() {
 
         composable("home") {
             HomeScreen(
-                navController = navController,
-                authManager = AuthManager,
                 onMovieClick = { movieId ->
                     navController.navigate("details/$movieId")
                 },
@@ -46,7 +45,9 @@ fun AppNavHost() {
                 onLoginClick = {
                     navController.navigate("login")
                 },
-                onProfileClick = {},
+                onProfileClick = {
+                    navController.navigate("profile")
+                },
                 onQrClick = {
                     navController.navigate("qrscanner")
                 }
@@ -205,6 +206,13 @@ fun AppNavHost() {
             QRScreenWithPermission(onScanned = {movieId ->
                 navController.navigate("details/$movieId")
             })
+        }
+
+        composable("profile") {
+            ProfileScreen(
+                navController = navController,
+                authManager = AuthManager,
+            )
         }
     }
 }

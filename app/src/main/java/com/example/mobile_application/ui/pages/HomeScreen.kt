@@ -28,24 +28,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.mobile_application.R
 import com.example.mobile_application.network.ApiClient
 import com.example.mobile_application.ui.components.MovieCard
 import com.example.mobile_application.ui.components.SearchHeader
-import com.example.mobile_application.utils.AuthManager
 import com.example.mobile_application.viewmodel.MovieViewModel
 
 @Composable
 fun HomeScreen(
     viewModel: MovieViewModel = viewModel(),
-    navController: NavController,
-    authManager: AuthManager,
     onMovieClick: (Int) -> Unit,
     onLocationClick: () -> Unit,
     onLoginClick: () -> Unit,
@@ -131,17 +126,6 @@ fun HomeScreen(
                         imageVector = Icons.Default.Person, // Ikona profilu
                         contentDescription = "Profil"
                     )
-                }
-
-                TextButton(
-                    onClick = {
-                        authManager.clearToken(context)
-                        navController.navigate("login") {
-                            popUpTo("home") { inclusive = true }
-                        }
-                    },
-                ) {
-                    Text("Wyloguj", color = Color.White)
                 }
             } else {
                 TextButton(
