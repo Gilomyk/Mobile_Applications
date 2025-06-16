@@ -97,6 +97,12 @@ data class CreateOrderResponse(
 //    val tickets: List<Ticket>
 //)
 
+data class RegisterResponse(
+    val id: Int,
+    val username: String,
+    val email: String
+)
+
 data class TokenResponse(
     val access: String,
     val refresh: String

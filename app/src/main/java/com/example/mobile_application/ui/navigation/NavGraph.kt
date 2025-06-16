@@ -21,6 +21,7 @@ import com.example.mobile_application.ui.pages.MovieDetailsScreen
 import com.example.mobile_application.ui.pages.MovieList
 import com.example.mobile_application.ui.pages.PaymentSuccessScreen
 import com.example.mobile_application.ui.pages.PaymentWebViewScreen
+import com.example.mobile_application.ui.pages.RegisterScreen
 import com.example.mobile_application.ui.pages.SeatSelectionScreen
 import com.example.mobile_application.utils.AuthManager
 
@@ -190,6 +191,10 @@ fun AppNavHost() {
                     navController.navigate("register")
                 }
             )
+        }
+
+        composable("register") {
+            RegisterScreen(navController = navController)
         }
     }
 }

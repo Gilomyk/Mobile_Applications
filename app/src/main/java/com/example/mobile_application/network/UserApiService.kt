@@ -1,6 +1,6 @@
 package com.example.mobile_application.network
 
-import com.example.mobile_application.model.RegisterRequest
+import com.example.mobile_application.model.RegisterResponse
 import com.example.mobile_application.model.TokenRequest
 import com.example.mobile_application.model.TokenResponse
 import com.example.mobile_application.model.User
@@ -14,7 +14,7 @@ interface UserApiService {
     suspend fun getProfile(): Response<User>
 
     @POST("/api/register/")
-    suspend fun  registerUser(@Body registerRequest: RegisterRequest): Response<Unit>
+    suspend fun register(@Body request: Map<String, String>): Response<RegisterResponse>
 
     @POST("/api/token/")
     suspend fun getUserToken(@Body tokenRequest: TokenRequest): Response<TokenResponse>
