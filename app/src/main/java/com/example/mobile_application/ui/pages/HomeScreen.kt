@@ -1,6 +1,5 @@
-package com.example.mobile_application.ui
+package com.example.mobile_application.ui.pages
 
-import android.graphics.drawable.Icon
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
