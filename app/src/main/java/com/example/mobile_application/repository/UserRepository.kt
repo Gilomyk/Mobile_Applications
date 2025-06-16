@@ -2,6 +2,7 @@ package com.example.mobile_application.repository
 
 import android.content.Context
 import android.util.Log
+import com.example.mobile_application.model.RegisterResponse
 import com.example.mobile_application.model.TokenRequest
 import com.example.mobile_application.model.TokenResponse
 import com.example.mobile_application.model.User
@@ -43,4 +44,15 @@ class UserRepository(private val context: Context) {
             throw e
         }
     }
+
+    suspend fun register(username: String, email: String, password1: String, password2: String): Response<RegisterResponse> {
+        val requestBody = mapOf(
+            "username" to username,
+            "email" to email,
+            "password1" to password1,
+            "password2" to password2
+        )
+        return api.register(requestBody)
+    }
+
 }

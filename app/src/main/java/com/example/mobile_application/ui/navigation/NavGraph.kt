@@ -13,16 +13,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.mobile_application.ui.HomeScreen
 import com.example.mobile_application.ui.pages.BookingSummaryScreen
 import com.example.mobile_application.ui.pages.ClosestCinemaList
+import com.example.mobile_application.ui.pages.HomeScreen
 import com.example.mobile_application.ui.pages.LoginScreen
 import com.example.mobile_application.ui.pages.MovieDetailsScreen
 import com.example.mobile_application.ui.pages.MovieList
 import com.example.mobile_application.ui.pages.PaymentSuccessScreen
 import com.example.mobile_application.ui.pages.PaymentWebViewScreen
 import com.example.mobile_application.ui.pages.QRScreenWithPermission
+import com.example.mobile_application.ui.pages.RegisterScreen
 import com.example.mobile_application.ui.pages.SeatSelectionScreen
+import com.example.mobile_application.utils.AuthManager
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -33,6 +35,8 @@ fun AppNavHost() {
 
         composable("home") {
             HomeScreen(
+                navController = navController,
+                authManager = AuthManager,
                 onMovieClick = { movieId ->
                     navController.navigate("details/$movieId")
                 },
@@ -186,8 +190,15 @@ fun AppNavHost() {
             LoginScreen(
                 onLoginSuccess = {
                     navController.navigate("home")
+                },
+                onNavigateToRegister = {
+                    navController.navigate("register")
                 }
             )
+        }
+
+        composable("register") {
+            RegisterScreen(navController = navController)
         }
 
         composable("qrscanner") {
