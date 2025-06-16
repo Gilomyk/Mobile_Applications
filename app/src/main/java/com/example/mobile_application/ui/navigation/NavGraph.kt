@@ -13,9 +13,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.mobile_application.ui.HomeScreen
 import com.example.mobile_application.ui.pages.BookingSummaryScreen
 import com.example.mobile_application.ui.pages.ClosestCinemaList
+import com.example.mobile_application.ui.pages.HomeScreen
 import com.example.mobile_application.ui.pages.LoginScreen
 import com.example.mobile_application.ui.pages.MovieDetailsScreen
 import com.example.mobile_application.ui.pages.MovieList

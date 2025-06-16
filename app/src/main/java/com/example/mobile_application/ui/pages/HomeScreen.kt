@@ -1,4 +1,4 @@
-package com.example.mobile_application.ui
+package com.example.mobile_application.ui.pages
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -100,7 +100,15 @@ fun HomeScreen(
                     }
                 )
             }
+        }
 
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             IconButton(
                 onClick = { onLocationClick() }) {
                 Icon(
@@ -143,6 +151,7 @@ fun HomeScreen(
                 }
             }
         }
+
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
