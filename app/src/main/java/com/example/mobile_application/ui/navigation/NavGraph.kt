@@ -22,6 +22,7 @@ import com.example.mobile_application.ui.pages.MovieList
 import com.example.mobile_application.ui.pages.PaymentSuccessScreen
 import com.example.mobile_application.ui.pages.PaymentWebViewScreen
 import com.example.mobile_application.ui.pages.SeatSelectionScreen
+import com.example.mobile_application.utils.AuthManager
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -32,6 +33,8 @@ fun AppNavHost() {
 
         composable("home") {
             HomeScreen(
+                navController = navController,
+                authManager = AuthManager,
                 onMovieClick = { movieId ->
                     navController.navigate("details/$movieId")
                 },
@@ -182,6 +185,9 @@ fun AppNavHost() {
             LoginScreen(
                 onLoginSuccess = {
                     navController.navigate("home")
+                },
+                onNavigateToRegister = {
+                    navController.navigate("register")
                 }
             )
         }
