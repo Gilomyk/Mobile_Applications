@@ -18,6 +18,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -29,10 +30,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobile_application.ui.theme.LocalAppColors
 import com.example.mobile_application.utils.LanguageManager
 import com.example.mobile_application.utils.ThemeManager
 
@@ -41,6 +42,8 @@ fun SettingsScreen(
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
+    val appColors = LocalAppColors.current
+    val colorScheme = MaterialTheme.colorScheme
 
     var isDarkTheme by remember { mutableStateOf(ThemeManager.isDarkTheme(context)) }
     var selectedLanguage by remember { mutableStateOf(LanguageManager.getLanguage(context)) }
@@ -49,7 +52,7 @@ fun SettingsScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .background(Color(0xFF0A0F1C))
+            .background(appColors.background)
             .padding(24.dp)
     ) {
         // Header
@@ -60,12 +63,12 @@ fun SettingsScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("Ustawienia", color = Color(0xFFE9ECEF), fontSize = 24.sp)
+            Text("Ustawienia", color = appColors.heading, fontSize = 24.sp)
             IconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.Filled.Close,
                     contentDescription = "Close",
-                    tint = Color.White
+                    tint = appColors.icon
                 )
             }
         }
@@ -76,19 +79,21 @@ fun SettingsScreen(
         Row(
             Modifier
                 .fillMaxWidth()
-                .background(Color(0xFF151A28), RoundedCornerShape(12.dp))
+                .background(appColors.cardBackground, RoundedCornerShape(12.dp))
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Ciemny motyw", color = Color.White)
+            Text("Ciemny motyw", color = appColors.text)
             Switch(
                 checked = isDarkTheme,
                 onCheckedChange = {
                     ThemeManager.toggleAndApplyTheme(context)
                     isDarkTheme = !isDarkTheme
                 },
-                colors = SwitchDefaults.colors(checkedThumbColor = Color(0xFF4318D1))
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = appColors.primary
+                )
             )
         }
 
@@ -98,12 +103,12 @@ fun SettingsScreen(
         Row(
             Modifier
                 .fillMaxWidth()
-                .background(Color(0xFF151A28), RoundedCornerShape(12.dp))
+                .background(appColors.cardBackground, RoundedCornerShape(12.dp))
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Język", color = Color.White)
+            Text("Język", color = appColors.text)
             DropdownMenuBox(
                 selected = selectedLanguage,
                 options = languageOptions,
@@ -120,23 +125,26 @@ fun SettingsScreen(
     }
 }
 
+
 @Composable
 fun DropdownMenuBox(
     selected: String,
     options: List<String>,
     onSelect: (String) -> Unit
 ) {
+    val appColors = LocalAppColors.current
+
     var expanded by remember { mutableStateOf(false) }
 
     Box {
         TextButton(onClick = { expanded = true }) {
-            Text(selected.uppercase(), color = Color.White)
+            Text(selected.uppercase(), color = appColors.text)
         }
 
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             options.forEach {
                 DropdownMenuItem(
-                    text = { Text(it.uppercase()) },
+                    text = { Text(it.uppercase(), color = appColors.text) },
                     onClick = {
                         onSelect(it)
                         expanded = false
@@ -146,3 +154,4 @@ fun DropdownMenuBox(
         }
     }
 }
+

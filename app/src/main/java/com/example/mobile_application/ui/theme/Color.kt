@@ -12,6 +12,7 @@ val LightBg = Color(0xFFF5F7FA)
 val OnLightBg = Color(0xFF1F2937)
 val LightMetaText = Color(0xFF6C757D)
 val LightSearchBorder = Color(0xFFE0E0E0)
+val LightSearchBg = Color(0xFFFFFFFF)
 
 // Ciemny motyw
 val DarkBg = Color(0xFF0A0F1C)

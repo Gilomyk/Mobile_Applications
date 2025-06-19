@@ -4,27 +4,58 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 data class AppColors(
+    val primary: Color,
+    val text: Color,
+    val icon: Color,
     val metaText: Color,
     val cardTitle: Color,
     val movieOverlay: Color,
     val searchBorder: Color,
     val textSecondary: Color,
+    val background: Color,
+    val heading: Color,
+    val error: Color,
+    val buttonText: Color,
+    val cardBackground: Color,
+    val surfaceVariant: Color,
+    val disabledText: Color,
 )
 
 val DarkAppColors = AppColors(
+    primary = AccentPurple,
+    text = OnDarkBg,
+    icon = OnDarkBg,
     metaText = Color(0xFFADB5BD),         // szarawy tekst pomocniczy
     cardTitle = Color(0xFFE0E0E0),        // tytuł w karcie
     movieOverlay = Color(0xCC000000),     // przezroczysty overlay
     searchBorder = DarkSearchBorder,
-    textSecondary = DarkMetaText
+    textSecondary = DarkMetaText,
+    background = DarkBg,
+    heading = OnDarkBg,
+    error = Color.Red,
+    buttonText = Color.White,
+    cardBackground = DarkSearchBg,
+    surfaceVariant = Color(0xFF1E2433),
+    disabledText = Color.Gray,
 )
 
 val LightAppColors = AppColors(
+    primary = AccentPurple,
+    text = OnLightBg,
+    icon = OnLightBg,
     metaText = Color(0xFF6C757D),         // jasnoszary tekst pomocniczy
     cardTitle = Color(0xFF212529),        // ciemny tekst
     movieOverlay = Color(0x66000000),     // półprzezroczysty overlay
     searchBorder = LightSearchBorder,
-    textSecondary = LightMetaText
+    textSecondary = LightMetaText,
+    background = LightBg,
+    heading = OnLightBg,
+    error = Color.Red,
+    buttonText = Color.White,
+    cardBackground = LightSearchBg,
+    surfaceVariant = Color(0xFFE9ECEF),
+    disabledText = Color.Gray,
 )
+
 
 val LocalAppColors = staticCompositionLocalOf { LightAppColors } // fallback na jasny

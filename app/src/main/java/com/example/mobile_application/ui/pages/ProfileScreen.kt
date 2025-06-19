@@ -29,7 +29,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -41,6 +40,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.mobile_application.R
+import com.example.mobile_application.ui.theme.LocalAppColors
 import com.example.mobile_application.utils.AuthManager
 import com.example.mobile_application.viewmodel.ProfileViewModel
 import com.example.mobile_application.viewmodel.TicketWithDetails
@@ -55,13 +55,13 @@ fun ProfileScreen(
     authManager: AuthManager,
 ) {
     val state by viewModel.uiState.collectAsState()
-
     val context = LocalContext.current
+    val appColors = LocalAppColors.current
 
     Column(
         Modifier
             .fillMaxSize()
-            .background(Color(0xFF0A0F1C))
+            .background(appColors.background)
             .padding(horizontal = 24.dp, vertical = 16.dp)
     ) {
         // Header
@@ -69,14 +69,14 @@ fun ProfileScreen(
             Modifier
                 .fillMaxWidth()
                 .height(88.dp)
-                .background(Color(0xFF151A28))
+                .background(appColors.cardBackground)
                 .padding(start = 24.dp, end = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = stringResource(R.string.profile),
-                color = Color(0xFFE9ECEF),
+                color = appColors.heading,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Medium
             )
@@ -88,9 +88,9 @@ fun ProfileScreen(
                     }
                 },
                 shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4318D1))
+                colors = ButtonDefaults.buttonColors(containerColor = appColors.primary)
             ) {
-                Text(stringResource(R.string.logout), color = Color.White)
+                Text(stringResource(R.string.logout), color = appColors.buttonText)
             }
         }
 
@@ -102,7 +102,7 @@ fun ProfileScreen(
             }
 
             state.error != null -> {
-                Text(state.error!!, color = Color.Red)
+                Text(state.error!!, color = appColors.error)
             }
 
             else -> {
@@ -110,7 +110,7 @@ fun ProfileScreen(
                 Column(
                     Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFF151A28), RoundedCornerShape(12.dp))
+                        .background(appColors.cardBackground, RoundedCornerShape(12.dp))
                         .padding(24.dp)
                 ) {
                     Row(
@@ -121,31 +121,35 @@ fun ProfileScreen(
                             Modifier
                                 .size(80.dp)
                                 .clip(CircleShape)
-                                .background(Color(0xFF4318D1)),
+                                .background(appColors.primary),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 state.user?.username?.firstOrNull()?.uppercase() ?: "",
-                                color = Color.White,
+                                color = appColors.buttonText,
                                 fontSize = 32.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         }
                         Column {
-                            Text(state.user?.username ?: "", color = Color.White, fontSize = 20.sp)
-                            Text(state.user?.email ?: "", color = Color(0xFFADB5BD))
+                            Text(state.user?.username ?: "", color = appColors.heading, fontSize = 20.sp)
+                            Text(state.user?.email ?: "", color = appColors.metaText)
                         }
                     }
                 }
 
                 Spacer(Modifier.height(24.dp))
 
-                Text(stringResource(R.string.your_reservations), color = Color(0xFFE9ECEF), fontSize = 18.sp)
+                Text(
+                    stringResource(R.string.your_reservations),
+                    color = appColors.heading,
+                    fontSize = 18.sp
+                )
 
                 Spacer(Modifier.height(12.dp))
 
                 if (state.tickets.isEmpty()) {
-                    Text(stringResource(R.string.no_reservations), color = Color(0xFFADB5BD))
+                    Text(stringResource(R.string.no_reservations), color = appColors.metaText)
                 } else {
                     LazyColumn(
                         modifier = Modifier.weight(1f),
@@ -164,6 +168,7 @@ fun ProfileScreen(
     }
 }
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReservationCard(ticketWithDetails: TicketWithDetails) {
@@ -172,15 +177,15 @@ fun ReservationCard(ticketWithDetails: TicketWithDetails) {
     val movie = ticketWithDetails.movie
 
     val showingDate: OffsetDateTime = OffsetDateTime.parse(showing.date)
-
     val now = OffsetDateTime.now()
-
     val isActive = showingDate.isAfter(now)
+
+    val appColors = LocalAppColors.current
 
     Row(
         Modifier
             .fillMaxWidth()
-            .background(Color(0xFF1E2433), RoundedCornerShape(8.dp))
+            .background(appColors.surfaceVariant, RoundedCornerShape(8.dp))
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -199,23 +204,24 @@ fun ReservationCard(ticketWithDetails: TicketWithDetails) {
         )
         Spacer(Modifier.width(16.dp))
         Column {
-            Text(movie.title, color = Color.White, fontWeight = FontWeight.SemiBold)
-            Text("${stringResource(R.string.seat)}: ${ticket.seat}", color = Color(0xFFADB5BD))
-            Text("${stringResource(R.string.price)}: ${ticket.purchase_price} zł", color = Color(0xFFADB5BD))
+            Text(movie.title, color = appColors.heading, fontWeight = FontWeight.SemiBold)
+            Text("${stringResource(R.string.seat)}: ${ticket.seat}", color = appColors.metaText)
+            Text("${stringResource(R.string.price)}: ${ticket.purchase_price} zł", color = appColors.metaText)
             Text(
                 "${stringResource(R.string.showing)}: ${showing.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))}",
-                color = Color(0xFFADB5BD)
+                color = appColors.metaText
             )
             Text(
                 "${stringResource(R.string.hall)}: ${showing.hall}",
-                color = Color(0xFFADB5BD)
+                color = appColors.metaText
             )
             Text(
                 if (isActive) stringResource(R.string.active) else stringResource(R.string.expired),
-                color = if (isActive) Color(0xFF4318D1) else Color.Gray
+                color = if (isActive) appColors.primary else appColors.disabledText
             )
         }
     }
 }
+
 
 

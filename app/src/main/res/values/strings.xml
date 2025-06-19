@@ -20,6 +20,7 @@
     <string name="sign_up">Sign up</string>
 
     <!-- Register -->
+    <string name="create_account">Create Account</string>
     <string name="email">Email</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="register">Sign Up</string>
