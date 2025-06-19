@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.kapt)
+    id("com.google.gms.google-services")
 }
 
 
@@ -82,6 +83,7 @@ dependencies {
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.play.services.mlkit.barcode.scanning)
+    implementation(libs.firebase.messaging.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -112,6 +114,7 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     // Lazy grid (foundation)
     implementation(libs.androidx.foundation)
+    implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
 
 
     kapt(libs.glide.compiler)

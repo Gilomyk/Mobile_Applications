@@ -37,6 +37,7 @@ import com.example.mobile_application.network.ApiClient
 import com.example.mobile_application.ui.components.MovieCard
 import com.example.mobile_application.ui.components.SearchHeader
 import com.example.mobile_application.viewmodel.MovieViewModel
+import com.google.firebase.messaging.FirebaseMessaging
 
 @Composable
 fun HomeScreen(
@@ -51,6 +52,19 @@ fun HomeScreen(
     var isLogged by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
+
+    FirebaseMessaging.getInstance().token
+        .addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("FCM", "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+
+            // Token gotowy
+            val token = task.result
+            Log.d("FCM", "FCM token: $token")
+        }
+
 
     //Coś do testów API
     LaunchedEffect(Unit) {
