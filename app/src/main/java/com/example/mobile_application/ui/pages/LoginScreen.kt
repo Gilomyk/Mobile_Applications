@@ -21,6 +21,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
 import com.example.mobile_application.R
+import com.example.mobile_application.ui.theme.LocalAppColors
 import com.example.mobile_application.viewmodel.LoginViewModel
 
 @Composable
@@ -52,6 +54,8 @@ fun LoginScreen(
     onNavigateToRegister: () -> Unit
 ) {
     val context = LocalContext.current
+    val colorScheme = MaterialTheme.colorScheme
+    val appColors = LocalAppColors.current
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -60,7 +64,7 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0A0F1C)) // dark mode background
+            .background(colorScheme.background)
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -70,7 +74,7 @@ fun LoginScreen(
                 .width(360.dp)
                 .wrapContentHeight(),
             shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF151A28)),
+            colors = CardDefaults.cardColors(containerColor = colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
             Column(
@@ -87,8 +91,8 @@ fun LoginScreen(
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
-                        stringResource(R.string.welcome_back),
-                        color = Color.White,
+                        text = stringResource(R.string.welcome_back),
+                        color = appColors.cardTitle,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -120,13 +124,19 @@ fun LoginScreen(
                 Button(
                     onClick = { viewModel.login(username, password) },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(contentColor = Color(0xFF4318D1))
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorScheme.primary,
+                        contentColor = Color.White
+                    )
                 ) {
-                    Text(stringResource(R.string.sign_in), color = Color.White)
+                    Text(text = stringResource(R.string.sign_in))
                 }
 
                 if (loginState.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.padding(top = 16.dp))
+                    CircularProgressIndicator(
+                        modifier = Modifier.padding(top = 16.dp),
+                        color = colorScheme.primary
+                    )
                 }
 
                 loginState.error?.let {
@@ -137,39 +147,18 @@ fun LoginScreen(
                     )
                 }
 
-//                Spacer(modifier = Modifier.height(24.dp))
-//                Text("or", color = Color.Gray)
-//                Spacer(modifier = Modifier.height(16.dp))
-//
-//                Button(
-//                    onClick = {
-//                        val intent = Intent(Intent.ACTION_VIEW,
-//                            "https://cinemaland.pl/accounts/google/login".toUri())
-//                        context.startActivity(intent)
-//                    },
-//                    colors = ButtonDefaults.outlinedButtonColors(containerColor = Color(0xFF1E2433)),
-//                    modifier = Modifier.fillMaxWidth()
-//                ) {
-//                    Icon(
-//                        painter = rememberImagePainter("https://cdn.builder.io/api/v1/image/assets/TEMP/ad71c24f47a2ca74c589e9308e862bf7221fdcc4"),
-//                        contentDescription = null,
-//                        modifier = Modifier.size(20.dp)
-//                    )
-//                    Spacer(modifier = Modifier.width(12.dp))
-//                    Text("Continue with Google", color = Color.White)
-//                }
-
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Row {
-                    Text(stringResource(R.string.no_account), color = Color.Gray)
+                    Text(
+                        text = stringResource(R.string.no_account),
+                        color = appColors.metaText
+                    )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = stringResource(R.string.sign_up),
-                        color = Color(0xFF4318D1),
-                        modifier = Modifier.clickable {
-                            onNavigateToRegister()
-                        }
+                        color = colorScheme.primary,
+                        modifier = Modifier.clickable { onNavigateToRegister() }
                     )
                 }
             }
@@ -182,4 +171,5 @@ fun LoginScreen(
         }
     }
 }
+
 
