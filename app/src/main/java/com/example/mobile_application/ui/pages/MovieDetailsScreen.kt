@@ -46,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -110,7 +111,7 @@ fun MovieDetailsScreen(
         val c = crew!!
 
         var selectedTab by remember { mutableStateOf(0) }
-        val tabs = listOf("Opis", "Seanse")
+        val tabs = listOf(stringResource(R.string.tab_description), stringResource(R.string.tab_showings))
 
         Column {
             TabRow(selectedTabIndex = selectedTab) {
@@ -189,8 +190,8 @@ fun DetailsTab (m: Movie, c: MovieCrew) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            MetadataItem(label = "Premiera", value = m.release_date)
-            MetadataItem(label = "Czas trwania", value = "${m.duration} min")
+            MetadataItem(label = stringResource(R.string.release_date), value = m.release_date)
+            MetadataItem(label = stringResource(R.string.duration), value = "${m.duration} min")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -215,7 +216,7 @@ fun DetailsTab (m: Movie, c: MovieCrew) {
         Spacer(modifier = Modifier.height(24.dp))
 
         // Opis filmu
-        SectionBlock(title = "Opis") {
+        SectionBlock(title = stringResource(R.string.description)) {
             Text(
                 text = m.description,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -227,9 +228,9 @@ fun DetailsTab (m: Movie, c: MovieCrew) {
         Spacer(modifier = Modifier.height(24.dp))
 
         // Reżyser i główna rola
-        SectionBlock(title = "Twórcy") {
-            CrewInfoItem(label = "Reżyser", value = c.director.joinToString { it.name })
-            CrewInfoItem(label = "Główna rola", value = c.main_lead.joinToString { it.name })
+        SectionBlock(title = stringResource(R.string.crew)) {
+            CrewInfoItem(label = stringResource(R.string.director), value = c.director.joinToString { it.name })
+            CrewInfoItem(label = stringResource(R.string.main_lead), value = c.main_lead.joinToString { it.name })
         }
     }
 }
@@ -326,7 +327,7 @@ fun ShowingsTab(
             }
         } else {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Wybierz kino, aby zobaczyć seanse")
+                Text(stringResource(R.string.choose_cinema))
             }
         }
     }
@@ -397,10 +398,10 @@ fun ShowtimeCard(
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         OffsetDateTime.parse(showing.date).toLocalTime().format(formatter)
     } catch (e: Exception) {
-        "Brak godziny"
+        stringResource(R.string.no_time)
     }
 
-    val hallTypeName = hallTypes.firstOrNull { it.id == showing.showing_type }?.hall_type ?: "Sala"
+    val hallTypeName = hallTypes.firstOrNull { it.id == showing.showing_type }?.hall_type ?: stringResource(R.string.default_hall)
 
     Card(
         modifier = Modifier

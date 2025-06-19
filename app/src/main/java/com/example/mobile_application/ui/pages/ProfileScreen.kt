@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,7 +75,7 @@ fun ProfileScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Profil",
+                text = stringResource(R.string.profile),
                 color = Color(0xFFE9ECEF),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Medium
@@ -89,7 +90,7 @@ fun ProfileScreen(
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4318D1))
             ) {
-                Text("Wyloguj", color = Color.White)
+                Text(stringResource(R.string.logout), color = Color.White)
             }
         }
 
@@ -139,12 +140,12 @@ fun ProfileScreen(
 
                 Spacer(Modifier.height(24.dp))
 
-                Text("Twoje rezerwacje", color = Color(0xFFE9ECEF), fontSize = 18.sp)
+                Text(stringResource(R.string.your_reservations), color = Color(0xFFE9ECEF), fontSize = 18.sp)
 
                 Spacer(Modifier.height(12.dp))
 
                 if (state.tickets.isEmpty()) {
-                    Text("Brak rezerwacji", color = Color(0xFFADB5BD))
+                    Text(stringResource(R.string.no_reservations), color = Color(0xFFADB5BD))
                 } else {
                     LazyColumn(
                         modifier = Modifier.weight(1f),
@@ -199,18 +200,18 @@ fun ReservationCard(ticketWithDetails: TicketWithDetails) {
         Spacer(Modifier.width(16.dp))
         Column {
             Text(movie.title, color = Color.White, fontWeight = FontWeight.SemiBold)
-            Text("Miejsce: ${ticket.seat}", color = Color(0xFFADB5BD))
-            Text("Cena: ${ticket.purchase_price} zł", color = Color(0xFFADB5BD))
+            Text("${stringResource(R.string.seat)}: ${ticket.seat}", color = Color(0xFFADB5BD))
+            Text("${stringResource(R.string.price)}: ${ticket.purchase_price} zł", color = Color(0xFFADB5BD))
             Text(
-                "Seans: ${showing.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))}",
+                "${stringResource(R.string.showing)}: ${showing.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))}",
                 color = Color(0xFFADB5BD)
             )
             Text(
-                "Sala: ${showing.hall}",
+                "${stringResource(R.string.hall)}: ${showing.hall}",
                 color = Color(0xFFADB5BD)
             )
             Text(
-                if (isActive) "Aktywny" else "Zakończony",
+                if (isActive) stringResource(R.string.active) else stringResource(R.string.expired),
                 color = if (isActive) Color(0xFF4318D1) else Color.Gray
             )
         }

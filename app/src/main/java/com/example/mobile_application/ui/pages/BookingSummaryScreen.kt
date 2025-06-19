@@ -34,9 +34,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mobile_application.R
 import com.example.mobile_application.model.TicketPayload
 import com.example.mobile_application.viewmodel.BookingSummaryViewModel
 import kotlinx.coroutines.launch
@@ -95,7 +97,7 @@ fun BookingSummaryScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Booking Summary",
+            text = stringResource(R.string.booking_summary),
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = 24.dp)
@@ -109,15 +111,15 @@ fun BookingSummaryScreen(
         ) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Movie", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
+                    Text(stringResource(R.string.movie), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
                     Text(movieTitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground)
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Date & Time", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
+                    Text(stringResource(R.string.datetime), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
                     Text("$date $time", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground)
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Cinema", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
+                    Text(stringResource(R.string.cinema), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
                     Text(cinemaName, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground)
                 }
             }
@@ -139,27 +141,27 @@ fun BookingSummaryScreen(
                 ) {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                            Text("Row", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
+                            Text(stringResource(R.string.row), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
                             Text(seatInfo?.row?.toString() ?: "-", style = MaterialTheme.typography.bodyMedium)
                         }
                         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                            Text("Seat", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
+                            Text(stringResource(R.string.seat_label), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
                             Text(seatInfo?.number?.toString() ?: "-", style = MaterialTheme.typography.bodyMedium)
                         }
                         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                            Text("Type", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
+                            Text(stringResource(R.string.type), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
                             // Dropdown for discount
                             var expanded by remember { mutableStateOf(false) }
                             Box {
                                 Text(
-                                    text = discounts.firstOrNull { it.id == ticket.discount }?.name ?: "Regular",
+                                    text = discounts.firstOrNull { it.id == ticket.discount }?.name ?: stringResource(R.string.discount_regular),
                                     modifier = Modifier
                                         .clickable { expanded = true }
                                         .background(MaterialTheme.colorScheme.primary.copy(alpha=0.1f), shape = RoundedCornerShape(6.dp))
                                         .padding(8.dp)
                                 )
                                 DropdownMenu(expanded, { expanded = false }) {
-                                    DropdownMenuItem(text = { Text("Regular") }, onClick = {
+                                    DropdownMenuItem(text = { Text(stringResource(R.string.discount_regular)) }, onClick = {
                                         expanded = false
                                         tickets = tickets.toMutableList().also {
                                             it[idx] = it[idx].copy(discount = null, purchase_price = showingPrice.toDouble())
@@ -178,7 +180,7 @@ fun BookingSummaryScreen(
                             }
                         }
                         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                            Text("Price", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
+                            Text(stringResource(R.string.price_label), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
                             Text("${ticket.purchase_price.toInt()} PLN", style = MaterialTheme.typography.bodyMedium)
                         }
                     }
@@ -193,7 +195,7 @@ fun BookingSummaryScreen(
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
+            label = { Text(stringResource(R.string.booking_email)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth()
@@ -246,7 +248,7 @@ fun BookingSummaryScreen(
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
         ) {
-            Text(if (isLoading) "Loading..." else "Confirm Booking")
+            Text(if (isLoading) stringResource(R.string.loading) else stringResource(R.string.confirm_booking))
         }
     }
 }

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Main App -->
+    <string name="app_name">Aplikacja_Mobilna</string>
+    <string name="logo_desc">To jest logo</string>
+    <string name="search_icon_desc">Trzeba zmienic ikonę</string>
+
+    <!-- Home -->
+    <string name="login_button">Zaloguj się</string>
+
+    <!-- Search Header -->
+    <string name="search">Wyszukaj Filmy…</string>
+
+    <!-- Login -->
+    <string name="welcome_back">Witaj ponownie</string>
+    <string name="username">Nazwa użytkownika</string>
+    <string name="password">Hasło</string>
+    <string name="sign_in">Zaloguj się</string>
+    <string name="no_account">Nie masz konta?</string>
+    <string name="sign_up">Zarejestruj się</string>
+
+    <!-- Register -->
+    <string name="email">Email</string>
+    <string name="confirm_password">Potwierdź hasło</string>
+    <string name="register">Zarejestruj się</string>
+    <string name="already_have_account">Masz już konto? Zaloguj się</string>
+
+    <!-- Profile -->
+    <string name="profile">Profil</string>
+    <string name="logout">Wyloguj</string>
+    <string name="your_reservations">Twoje rezerwacje</string>
+    <string name="no_reservations">Brak rezerwacji</string>
+    <string name="seat">Miejsce</string>
+    <string name="price">Cena</string>
+    <string name="showing">Seans</string>
+    <string name="hall">Sala</string>
+    <string name="active">Aktywny</string>
+    <string name="expired">Zakończony</string>
+
+    <!-- Closest Cinemas -->
+    <string name="location_permission_denied">Brak zgody na lokalizację</string>
+    <string name="nearest_cinemas">Najbliższe kina:</string>
+
+    <!-- MovieDetails -->
+    <string name="tab_description">Opis</string>
+    <string name="tab_showings">Seanse</string>
+    <string name="release_date">Premiera</string>
+    <string name="duration">Czas trwania</string>
+    <string name="description">Opis</string>
+    <string name="crew">Twórcy</string>
+    <string name="director">Reżyser</string>
+    <string name="main_lead">Główna rola</string>
+    <string name="choose_cinema">Wybierz kino, aby zobaczyć seanse</string>
+    <string name="no_time">Brak godziny</string>
+    <string name="default_hall">Sala</string>
+
+    <!-- SeatSelection -->
+    <string name="book_seats">Rezerwuj</string>
+
+    <!-- BookingSummary -->
+    <string name="booking_summary">Podsumowanie rezerwacji</string>
+    <string name="movie">Film</string>
+    <string name="datetime">Data i godzina</string>
+    <string name="cinema">Kino</string>
+    <string name="row">Rzęd</string>
+    <string name="seat_label">Miejsce</string>
+    <string name="type">Rodzaj</string>
+    <string name="discount_regular">Regularny</string>
+    <string name="price_label">Cena</string>
+    <string name="booking_email">Email</string>
+    <string name="confirm_booking">Potwierdź rezerwację</string>
+    <string name="loading">Wczytywanie…</string>
+
+    <!-- Payment Success -->
+    <string name="payment_success">✅ Płatność zakończona sukcesem!</string>
+    <string name="thank_you">Dziękujemy za zakup. Twój bilet został zarezerwowany.</string>
+    <string name="back_to_home">Wróć na stronę główną</string>
+</resources>

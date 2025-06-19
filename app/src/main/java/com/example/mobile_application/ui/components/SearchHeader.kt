@@ -52,7 +52,7 @@ fun SearchHeader(
             modifier = Modifier
                 .weight(1f)
                 .background(Color.White, RoundedCornerShape(8.dp)),
-            placeholder = { Text("Search movies...") },
+            placeholder = { Text(stringResource(R.string.search)) },
             leadingIcon = {
                 Icon(
                     painter = painterResource(R.drawable.ic_search),

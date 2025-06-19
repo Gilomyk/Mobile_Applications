@@ -28,10 +28,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mobile_application.R
 import com.example.mobile_application.ui.theme.AccentPurple
 import com.example.mobile_application.ui.theme.AvailableColor
 import com.example.mobile_application.ui.theme.JustTakenColor
@@ -174,7 +176,7 @@ fun SeatSelectionScreen(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text("Rezerwuj (${selected.size})")
+            Text("${stringResource(R.string.book_seats)} (${selected.size})")
         }
     }
 }

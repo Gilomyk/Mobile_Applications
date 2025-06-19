@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -28,8 +29,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobile_application.R
@@ -47,6 +50,7 @@ fun HomeScreen(
     onLoginClick: () -> Unit,
     onProfileClick: () -> Unit,
     onQrClick: () -> Unit,
+    onSettingsClick: () -> Unit,
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var isLogged by remember { mutableStateOf(false) }
@@ -148,7 +152,7 @@ fun HomeScreen(
                         Log.d("LOGIN_BUTTON", "Login button clicked")
                     }
                 ) {
-                    Text("Zaloguj się")
+                    Text(stringResource(R.string.login_button))
                 }
             }
 
@@ -158,6 +162,11 @@ fun HomeScreen(
                     contentDescription = "Skanuj kod QR",
                 )
             }
+
+            IconButton(onClick = { onSettingsClick() }) {
+                Icon(Icons.Default.Settings, contentDescription = "Ustawienia", tint = Color.White)
+            }
+
         }
 
         LazyVerticalGrid(

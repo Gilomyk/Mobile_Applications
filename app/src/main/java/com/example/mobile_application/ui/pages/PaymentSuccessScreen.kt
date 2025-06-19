@@ -16,10 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobile_application.R
 
 @Composable
 fun PaymentSuccessScreen(
@@ -41,7 +43,7 @@ fun PaymentSuccessScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "✅ Płatność zakończona sukcesem!",
+                text = stringResource(R.string.payment_success),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF43F08C),
@@ -50,7 +52,7 @@ fun PaymentSuccessScreen(
             )
 
             Text(
-                text = "Dziękujemy za zakup. Twój bilet został zarezerwowany.",
+                text = stringResource(R.string.thank_you),
                 fontSize = 16.sp,
                 color = Color(0xFFE9ECEF),
                 modifier = Modifier.padding(bottom = 32.dp),
@@ -66,7 +68,7 @@ fun PaymentSuccessScreen(
                 ),
                 contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)
             ) {
-                Text(text = "Wróć na stronę główną", fontWeight = FontWeight.Medium)
+                Text(text = stringResource(R.string.back_to_home), fontWeight = FontWeight.Medium)
             }
         }
     }

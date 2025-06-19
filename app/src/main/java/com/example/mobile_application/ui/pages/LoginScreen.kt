@@ -35,12 +35,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
+import com.example.mobile_application.R
 import com.example.mobile_application.viewmodel.LoginViewModel
 
 @Composable
@@ -85,7 +87,7 @@ fun LoginScreen(
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
-                        "Welcome Back",
+                        stringResource(R.string.welcome_back),
                         color = Color.White,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Medium
@@ -97,7 +99,7 @@ fun LoginScreen(
                 OutlinedTextField(
                     value = username,
                     onValueChange = { username = it },
-                    label = { Text("Username") },
+                    label = { Text(stringResource(R.string.username)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -107,7 +109,7 @@ fun LoginScreen(
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
-                    label = { Text("Password") },
+                    label = { Text(stringResource(R.string.password)) },
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()
@@ -120,7 +122,7 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(contentColor = Color(0xFF4318D1))
                 ) {
-                    Text("Sign In", color = Color.White)
+                    Text(stringResource(R.string.sign_in), color = Color.White)
                 }
 
                 if (loginState.isLoading) {
@@ -160,10 +162,10 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Row {
-                    Text("Don't have an account?", color = Color.Gray)
+                    Text(stringResource(R.string.no_account), color = Color.Gray)
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "Sign up",
+                        text = stringResource(R.string.sign_up),
                         color = Color(0xFF4318D1),
                         modifier = Modifier.clickable {
                             onNavigateToRegister()

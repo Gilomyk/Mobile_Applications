@@ -25,6 +25,7 @@ import com.example.mobile_application.ui.pages.ProfileScreen
 import com.example.mobile_application.ui.pages.QRScreenWithPermission
 import com.example.mobile_application.ui.pages.RegisterScreen
 import com.example.mobile_application.ui.pages.SeatSelectionScreen
+import com.example.mobile_application.ui.pages.SettingsScreen
 import com.example.mobile_application.utils.AuthManager
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -50,6 +51,9 @@ fun AppNavHost() {
                 },
                 onQrClick = {
                     navController.navigate("qrscanner")
+                },
+                onSettingsClick = {
+                    navController.navigate("settings")
                 }
             )
         }
@@ -212,6 +216,12 @@ fun AppNavHost() {
             ProfileScreen(
                 navController = navController,
                 authManager = AuthManager,
+            )
+        }
+
+        composable("settings") {
+            SettingsScreen(
+                onBack = { navController.popBackStack() }
             )
         }
     }

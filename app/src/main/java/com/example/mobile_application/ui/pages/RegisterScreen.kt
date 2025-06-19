@@ -21,11 +21,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.mobile_application.R
 import com.example.mobile_application.viewmodel.RegisterViewModel
 
 @Composable
@@ -52,10 +54,10 @@ fun RegisterScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        OutlinedTextField(value = username, onValueChange = { username = it }, label = { Text("Username") })
-        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
-        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation())
-        OutlinedTextField(value = confirmPassword, onValueChange = { confirmPassword = it }, label = { Text("Confirm Password") }, visualTransformation = PasswordVisualTransformation())
+        OutlinedTextField(value = username, onValueChange = { username = it }, label = { Text(stringResource(R.string.username)) })
+        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text(stringResource(R.string.email)) })
+        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text(stringResource(R.string.password)) }, visualTransformation = PasswordVisualTransformation())
+        OutlinedTextField(value = confirmPassword, onValueChange = { confirmPassword = it }, label = { Text(stringResource(R.string.confirm_password)) }, visualTransformation = PasswordVisualTransformation())
 
         if (state.error != null) {
             Text(text = state.error ?: "", color = Color.Red, fontSize = 14.sp)
@@ -69,11 +71,11 @@ fun RegisterScreen(
             },
             modifier = Modifier.padding(top = 16.dp)
         ) {
-            Text("Sign Up")
+            Text(stringResource(R.string.sign_up))
         }
 
         TextButton(onClick = { navController.navigate("login") }) {
-            Text("Masz już konto? Zaloguj się")
+            Text(stringResource(R.string.already_have_account))
         }
     }
 
