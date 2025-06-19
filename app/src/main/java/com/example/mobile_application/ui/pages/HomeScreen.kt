@@ -1,8 +1,8 @@
 package com.example.mobile_application.ui.pages
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,14 +13,16 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,8 +30,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,6 +41,7 @@ import com.example.mobile_application.R
 import com.example.mobile_application.network.ApiClient
 import com.example.mobile_application.ui.components.MovieCard
 import com.example.mobile_application.ui.components.SearchHeader
+import com.example.mobile_application.ui.theme.LocalAppColors
 import com.example.mobile_application.viewmodel.MovieViewModel
 import com.google.firebase.messaging.FirebaseMessaging
 
@@ -52,123 +55,85 @@ fun HomeScreen(
     onQrClick: () -> Unit,
     onSettingsClick: () -> Unit,
 ) {
+    val appColors = LocalAppColors.current
     var searchQuery by remember { mutableStateOf("") }
     var isLogged by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
-    FirebaseMessaging.getInstance().token
-        .addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w("FCM", "Fetching FCM registration token failed", task.exception)
-                return@addOnCompleteListener
-            }
-
-            // Token gotowy
-            val token = task.result
-            Log.d("FCM", "FCM token: $token")
+    // Firebase Messaging Token (dev debug)
+    FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            Log.d("FCM", "FCM token: ${task.result}")
         }
+    }
 
-
-    //Coś do testów API
+    // Check login status
     LaunchedEffect(Unit) {
         try {
             val api = ApiClient.create(context).userService
             val response = api.getProfile()
-            Log.d("API_TEST", "Response headers: ${response.headers()}")
-            Log.d("API_TEST", "HTTP message: ${response.code()} - ${response.message()}")
             if (response.isSuccessful) {
-                Log.d("API_TEST", "Response: ${response.body()}")
                 isLogged = true
-            } else {
-                Log.e("API_TEST", "HTTP error: ${response.code()} - ${response.message()}")
-                Log.e("API_TEST", "Response body: ${response.errorBody()?.string()}")
             }
-        } catch (e: Exception) {
-            Log.e("API_TEST", "Exception: ${e.localizedMessage}")
-            Log.e("API_TEST", "Stacktrace: ${Log.getStackTraceString(e)}")
-
-        }
+        } catch (_: Exception) { }
     }
 
-
-
-    // Automatycznie fetchujemy filmy przy pierwszym renderze lub zmianie query
+    // Fetch movies
     LaunchedEffect(searchQuery) {
         viewModel.fetchMovies(searchQuery.ifBlank { null })
     }
 
-    val movies by viewModel.movies.observeAsState() // lub .observeAsState() jeśli używasz LiveData
+    val movies by viewModel.movies.observeAsState()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().background(appColors.background)) {
+        // Search Header
+        SearchHeader(
+            query = searchQuery,
+            onQueryChange = { searchQuery = it },
+            onSearch = { viewModel.fetchMovies(searchQuery.ifBlank { null }) }
+        )
+
+        // Top action icons row
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(modifier = Modifier.weight(1f)) {
-                SearchHeader(
-                    query = searchQuery,
-                    onQueryChange = { searchQuery = it },
-                    onSearch = {
-                        viewModel.fetchMovies(searchQuery.ifBlank { null })
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                IconButton(onClick = onLocationClick) {
+                    Icon(Icons.Default.LocationOn, contentDescription = null, tint = appColors.icon)
+                }
+                if (isLogged) {
+                    IconButton(onClick = onProfileClick) {
+                        Icon(Icons.Default.Person, contentDescription = null, tint = appColors.icon)
                     }
-                )
+                } else {
+                    Button(
+                        onClick = onLoginClick,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = appColors.primary,
+                            contentColor = appColors.buttonText
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(stringResource(R.string.login_button))
+                    }
+                }
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                IconButton(onClick = onQrClick) {
+                    Icon(painterResource(R.drawable.ic_qr_code), contentDescription = null, tint = appColors.icon)
+                }
+                IconButton(onClick = onSettingsClick) {
+                    Icon(Icons.Default.Settings, contentDescription = null, tint = appColors.icon)
+                }
             }
         }
 
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            IconButton(
-                onClick = { onLocationClick() }) {
-                Icon(
-                    imageVector = Icons.Default.LocationOn,
-                    contentDescription = "Lokalizacja"
-                )
-            }
-
-            if (isLogged) {
-                IconButton(
-                    onClick = {
-                        onProfileClick() // Przejdź do profilu
-                        Log.d("PROFILE_BUTTON", "Profile button clicked")
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Person, // Ikona profilu
-                        contentDescription = "Profil"
-                    )
-                }
-            } else {
-                TextButton(
-                    onClick = {
-                        onLoginClick()
-                        Log.d("LOGIN_BUTTON", "Login button clicked")
-                    }
-                ) {
-                    Text(stringResource(R.string.login_button))
-                }
-            }
-
-            IconButton(onClick = { onQrClick() }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_qr_code),
-                    contentDescription = "Skanuj kod QR",
-                )
-            }
-
-            IconButton(onClick = { onSettingsClick() }) {
-                Icon(Icons.Default.Settings, contentDescription = "Ustawienia", tint = Color.White)
-            }
-
-        }
-
+        // Movie Grid
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxSize(),
@@ -176,18 +141,10 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            itemsIndexed(
-                items = movies.orEmpty(),
-                span = { index, _ ->
-                    if (index == 0) GridItemSpan(2) else GridItemSpan(1)
-                }
-                // dzięki Ci Span że używasz indeksów, bo prawie wywaliłem ten komputer za okno
-            ) { index, movie ->
+            itemsIndexed(movies.orEmpty(), span = { index, _ -> if (index == 0) GridItemSpan(2) else GridItemSpan(1) }) { _, movie ->
                 MovieCard(movie = movie, onClick = { onMovieClick(movie.id) })
             }
         }
-
-
     }
 }
 

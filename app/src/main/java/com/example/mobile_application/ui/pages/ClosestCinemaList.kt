@@ -4,19 +4,23 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Looper
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +39,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobile_application.R
+import com.example.mobile_application.ui.theme.LocalAppColors
 import com.example.mobile_application.viewmodel.CinemaViewModel
 import com.google.android.gms.location.LocationAvailability
 import com.google.android.gms.location.LocationCallback
@@ -47,22 +52,22 @@ import com.google.android.gms.location.Priority
 @Composable
 fun ClosestCinemaList(
     viewModel: CinemaViewModel = viewModel(),
-    onCinemaClick: (Int) -> Unit = {}) {
+    onCinemaClick: (Int) -> Unit = {}
+) {
     val context = LocalContext.current
+    val appColors = LocalAppColors.current
     var permissionGranted by remember { mutableStateOf(false) }
     val cinemaList by viewModel.cinemas.collectAsState()
 
-    //Permissions
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        permissionGranted = granted
-    }
+    ) { granted -> permissionGranted = granted }
 
     LaunchedEffect(Unit) {
         if (ContextCompat.checkSelfPermission(
-            context, Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED) {
+                context, Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         } else {
             permissionGranted = true
@@ -72,47 +77,58 @@ fun ClosestCinemaList(
     LaunchedEffect(permissionGranted) {
         if (permissionGranted) {
             requestSingleLocationUpdate(context) { location ->
-                Log.d("LOCATION", "requestLocationUpdates result: $location")
                 if (location != null) {
                     viewModel.fetchClosestCinemas(location.latitude, location.longitude)
-                } else {
-                    Log.w("LOCATION", "Brak lokalizacji! Nie wywołano fetchClosestCinemas()")
                 }
             }
         }
     }
 
-
-    if (!permissionGranted) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Log.d("LOCATION", "No permission")
-            Text(stringResource(R.string.location_permission_denied))
-        }
-    } else {
-        Log.d("LOCATION", "Starting loading")
-        Column(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(appColors.background)) {
+        if (!permissionGranted) {
             Text(
-                text = stringResource(R.string.nearest_cinemas),
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.CenterHorizontally),
-                style = MaterialTheme.typography.titleLarge
+                text = stringResource(R.string.location_permission_denied),
+                color = appColors.text,
+                modifier = Modifier.align(Alignment.Center)
             )
+        } else {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Text(
+                    text = stringResource(R.string.nearest_cinemas),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = appColors.text,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
 
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(cinemaList) { cinema ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                            .clickable { onCinemaClick(cinema.id) }
-                    ) {
-                        Column(Modifier.padding(8.dp)) {
-                            Text(text = cinema.name, style = MaterialTheme.typography.titleMedium)
-                            Text(text = cinema.location_city, style = MaterialTheme.typography.bodyMedium)
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 12.dp),
+                    contentPadding = PaddingValues(bottom = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(cinemaList) { cinema ->
+                        Card(
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(containerColor = appColors.cardBackground),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onCinemaClick(cinema.id) }
+                        ) {
+                            Column(Modifier.padding(16.dp)) {
+                                Text(
+                                    text = cinema.name,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = appColors.text
+                                )
+                                Text(
+                                    text = cinema.location_city,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = appColors.textSecondary
+                                )
+                            }
                         }
                     }
                 }

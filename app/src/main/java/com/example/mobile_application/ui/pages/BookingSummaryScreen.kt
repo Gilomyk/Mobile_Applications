@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobile_application.R
 import com.example.mobile_application.model.TicketPayload
+import com.example.mobile_application.ui.theme.AppColors
+import com.example.mobile_application.ui.theme.LocalAppColors
 import com.example.mobile_application.viewmodel.BookingSummaryViewModel
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
@@ -54,19 +56,25 @@ fun BookingSummaryScreen(
     onConfirmed: (String) -> Unit,
     viewModel: BookingSummaryViewModel = viewModel()
 ) {
+    val colorScheme = MaterialTheme.colorScheme
+    val appColors = LocalAppColors.current
+
     val movieTitle by viewModel.movieTitle.collectAsState()
     val cinemaName by viewModel.cinemaName.collectAsState()
     val date by viewModel.date.collectAsState()
     val time by viewModel.time.collectAsState()
     val showingPrice by viewModel.showingPrice.collectAsState()
     val seats by viewModel.selectedSeats.collectAsState()
-
     val discounts by viewModel.discounts.collectAsState()
+
     var email by remember { mutableStateOf("") }
     var tickets by remember { mutableStateOf<List<TicketPayload>>(emptyList()) }
 
     var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
+
+    val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         viewModel.loadContext(showingId, seatIds)
@@ -86,20 +94,17 @@ fun BookingSummaryScreen(
         }
     }
 
-    val scrollState = rememberScrollState()
-    val coroutineScope = rememberCoroutineScope()
-
     Column(
         Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(appColors.background)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = stringResource(R.string.booking_summary),
             style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = appColors.heading,
             modifier = Modifier.padding(bottom = 24.dp)
         )
 
@@ -107,25 +112,15 @@ fun BookingSummaryScreen(
             Modifier
                 .fillMaxWidth()
                 .padding(bottom = 24.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            colors = CardDefaults.cardColors(containerColor = appColors.cardBackground)
         ) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(stringResource(R.string.movie), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
-                    Text(movieTitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground)
-                }
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(stringResource(R.string.datetime), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
-                    Text("$date $time", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground)
-                }
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(stringResource(R.string.cinema), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
-                    Text(cinemaName, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground)
-                }
+                InfoRow(stringResource(R.string.movie), movieTitle, appColors)
+                InfoRow(stringResource(R.string.datetime), "$date $time", appColors)
+                InfoRow(stringResource(R.string.cinema), cinemaName, appColors)
             }
         }
 
-        // Tickets list
         Column(
             Modifier
                 .fillMaxWidth()
@@ -137,28 +132,24 @@ fun BookingSummaryScreen(
                 val seatInfo = seats.find { it.id == ticket.seat }
                 Card(
                     Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                    colors = CardDefaults.cardColors(containerColor = appColors.cardBackground)
                 ) {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        InfoRow(stringResource(R.string.row), seatInfo?.row?.toString() ?: "-", appColors)
+                        InfoRow(stringResource(R.string.seat_label), seatInfo?.number?.toString() ?: "-", appColors)
+
                         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                            Text(stringResource(R.string.row), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
-                            Text(seatInfo?.row?.toString() ?: "-", style = MaterialTheme.typography.bodyMedium)
-                        }
-                        Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                            Text(stringResource(R.string.seat_label), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
-                            Text(seatInfo?.number?.toString() ?: "-", style = MaterialTheme.typography.bodyMedium)
-                        }
-                        Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                            Text(stringResource(R.string.type), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
-                            // Dropdown for discount
+                            Text(stringResource(R.string.type), style = MaterialTheme.typography.bodyMedium, color = appColors.metaText)
                             var expanded by remember { mutableStateOf(false) }
+
                             Box {
                                 Text(
                                     text = discounts.firstOrNull { it.id == ticket.discount }?.name ?: stringResource(R.string.discount_regular),
                                     modifier = Modifier
                                         .clickable { expanded = true }
-                                        .background(MaterialTheme.colorScheme.primary.copy(alpha=0.1f), shape = RoundedCornerShape(6.dp))
-                                        .padding(8.dp)
+                                        .background(appColors.discountBg, shape = RoundedCornerShape(6.dp))
+                                        .padding(8.dp),
+                                    color = appColors.text
                                 )
                                 DropdownMenu(expanded, { expanded = false }) {
                                     DropdownMenuItem(text = { Text(stringResource(R.string.discount_regular)) }, onClick = {
@@ -168,7 +159,9 @@ fun BookingSummaryScreen(
                                         }
                                     })
                                     discounts.forEach { disc ->
-                                        DropdownMenuItem(text = { Text("${disc.name} (-${disc.percentage.toInt()}%)") }, onClick = {
+                                        DropdownMenuItem(text = {
+                                            Text("${disc.name} (-${disc.percentage.toInt()}%)")
+                                        }, onClick = {
                                             expanded = false
                                             val price = ((100 - disc.percentage) * showingPrice / 100)
                                             tickets = tickets.toMutableList().also {
@@ -179,18 +172,15 @@ fun BookingSummaryScreen(
                                 }
                             }
                         }
-                        Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                            Text(stringResource(R.string.price_label), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
-                            Text("${ticket.purchase_price.toInt()} PLN", style = MaterialTheme.typography.bodyMedium)
-                        }
+
+                        InfoRow(stringResource(R.string.price_label), "${ticket.purchase_price.toInt()} PLN", appColors)
                     }
                 }
             }
         }
 
-        // Total & email
         val total = tickets.sumOf { it.purchase_price }
-        Text("Total: ${total.toInt()} PLN", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(8.dp))
+        Text("Total: ${total.toInt()} PLN", style = MaterialTheme.typography.headlineSmall, color = appColors.heading, modifier = Modifier.padding(8.dp))
 
         OutlinedTextField(
             value = email,
@@ -201,41 +191,31 @@ fun BookingSummaryScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        if (error != null) {
-            Text(error!!, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(8.dp))
+        error?.let {
+            Text(it, color = appColors.error, modifier = Modifier.padding(8.dp))
         }
 
         Button(
             onClick = {
                 isLoading = true
                 error = null
-
-                // Coroutine do tworzenia biletów i zamówienia
                 coroutineScope.launch {
                     try {
-                        val now = OffsetDateTime.now().toString() // lub odpowiednik z ThreeTenABP
-                        val ticketPayloads = tickets.map {
-                            it.copy(purchase_time = now)
-                        }
-
+                        val now = OffsetDateTime.now().toString()
+                        val ticketPayloads = tickets.map { it.copy(purchase_time = now) }
                         val ticketIds = viewModel.postTickets(ticketPayloads)
-
                         if (ticketIds.isEmpty()) {
                             error = "Ticket creation failed."
                             isLoading = false
                             return@launch
                         }
-
                         val orderResponse = viewModel.postOrder(ticketIds, email)
                         if (orderResponse == null) {
                             error = "Order creation failed."
                             isLoading = false
                             return@launch
                         }
-
-                        // Gotowe – wywołaj callback z URLem
                         onConfirmed(orderResponse.payment_url)
-
                     } catch (e: Exception) {
                         error = "Unexpected error: ${e.localizedMessage}"
                     } finally {
@@ -250,5 +230,13 @@ fun BookingSummaryScreen(
         ) {
             Text(if (isLoading) stringResource(R.string.loading) else stringResource(R.string.confirm_booking))
         }
+    }
+}
+
+@Composable
+private fun InfoRow(label: String, value: String, appColors: AppColors) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Text(label, style = MaterialTheme.typography.bodyMedium, color = appColors.metaText)
+        Text(value, style = MaterialTheme.typography.bodyMedium, color = appColors.text)
     }
 }

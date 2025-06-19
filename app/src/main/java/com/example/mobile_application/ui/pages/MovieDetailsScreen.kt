@@ -1,6 +1,5 @@
 package com.example.mobile_application.ui.pages
 
-import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -8,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,7 +63,7 @@ import com.example.mobile_application.model.MovieShowing
 import com.example.mobile_application.ui.theme.CrewBg
 import com.example.mobile_application.ui.theme.CrewBorderAccent
 import com.example.mobile_application.ui.theme.GenrePurple
-import com.example.mobile_application.ui.theme.getMetaTextColor
+import com.example.mobile_application.ui.theme.LocalAppColors
 import com.example.mobile_application.viewmodel.CinemaViewModel
 import com.example.mobile_application.viewmodel.MovieDetailsViewModel
 import java.time.LocalDate
@@ -76,11 +74,14 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun MovieDetailsScreen(
     movieId: Int,
-    cinemaId: Int?=null,
+    cinemaId: Int? = null,
     onShowtimeClick: (Int, Int) -> Unit,
     viewModel: MovieDetailsViewModel = viewModel(),
     cinemaViewModel: CinemaViewModel = viewModel(),
 ) {
+    val colorScheme = MaterialTheme.colorScheme
+    val appColors = LocalAppColors.current
+
     LaunchedEffect(movieId) {
         viewModel.fetchMovieDetails(movieId)
         if (cinemaId == null)
@@ -91,7 +92,7 @@ fun MovieDetailsScreen(
 
     val movie by viewModel.movie.collectAsState()
     val crew by viewModel.crew.collectAsState()
-    val cinemas by viewModel.cinemas.collectAsState()
+    val cinemas by cinemaViewModel.cinemas.collectAsState()
     val cinemaHalls by viewModel.cinemaHalls.collectAsState()
     val hallTypes by viewModel.hallTypes.collectAsState()
     val showingsByDate by viewModel.showingsByDate.collectAsState()
@@ -101,17 +102,20 @@ fun MovieDetailsScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+                .background(colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
-            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+            CircularProgressIndicator(color = colorScheme.primary)
         }
     } else {
         val m = movie!!
         val c = crew!!
 
         var selectedTab by remember { mutableStateOf(0) }
-        val tabs = listOf(stringResource(R.string.tab_description), stringResource(R.string.tab_showings))
+        val tabs = listOf(
+            stringResource(R.string.tab_description),
+            stringResource(R.string.tab_showings)
+        )
 
         Column {
             TabRow(selectedTabIndex = selectedTab) {
@@ -125,13 +129,13 @@ fun MovieDetailsScreen(
             }
 
             when (selectedTab) {
-                0 -> DetailsTab(m = movie!!, c = crew!!)
+                0 -> DetailsTab(m = m, c = c)
                 1 -> ShowingsTab(
                     movieId = movieId,
                     viewModel = viewModel,
                     cinemaId = cinemaId,
                     cinemas = cinemas,
-                    cinemaHalls =  cinemaHalls,
+                    cinemaHalls = cinemaHalls,
                     hallTypes = hallTypes,
                     showingsByDate = showingsByDate,
                     loading = loadingShowtimes,
@@ -143,15 +147,15 @@ fun MovieDetailsScreen(
 }
 
 @Composable
-fun DetailsTab (m: Movie, c: MovieCrew) {
-
+fun DetailsTab(m: Movie, c: MovieCrew) {
     val scrollState = rememberScrollState()
+    val appColors = LocalAppColors.current
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .background(MaterialTheme.colorScheme.background)
+            .background(appColors.background)
             .padding(horizontal = 16.dp, vertical = 24.dp)
     ) {
         // Tytuł filmu
@@ -159,7 +163,7 @@ fun DetailsTab (m: Movie, c: MovieCrew) {
             text = m.title,
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
+            color = appColors.heading
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -168,7 +172,7 @@ fun DetailsTab (m: Movie, c: MovieCrew) {
         Card(
             shape = RoundedCornerShape(12.dp),
             elevation = CardDefaults.cardElevation(6.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            colors = CardDefaults.cardColors(containerColor = appColors.cardBackground)
         ) {
             Image(
                 painter = rememberAsyncImagePainter(
@@ -187,9 +191,7 @@ fun DetailsTab (m: Movie, c: MovieCrew) {
         Spacer(modifier = Modifier.height(24.dp))
 
         // Metadane filmu
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             MetadataItem(label = stringResource(R.string.release_date), value = m.release_date)
             MetadataItem(label = stringResource(R.string.duration), value = "${m.duration} min")
         }
@@ -219,7 +221,7 @@ fun DetailsTab (m: Movie, c: MovieCrew) {
         SectionBlock(title = stringResource(R.string.description)) {
             Text(
                 text = m.description,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = appColors.text,
                 fontSize = 16.sp,
                 lineHeight = 24.sp
             )
@@ -235,13 +237,12 @@ fun DetailsTab (m: Movie, c: MovieCrew) {
     }
 }
 
-@SuppressLint("RememberReturnType")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ShowingsTab(
     movieId: Int,
     viewModel: MovieDetailsViewModel,
-    cinemaId: Int?=null,
+    cinemaId: Int? = null,
     cinemas: List<Cinema>,
     cinemaHalls: List<CinemaHall>,
     hallTypes: List<HallType>,
@@ -249,6 +250,7 @@ fun ShowingsTab(
     loading: Boolean,
     onShowtimeClick: (Int, Int) -> Unit
 ) {
+    val appColors = LocalAppColors.current
     val dates = remember { (0 until 30).map { LocalDate.now().plusDays(it.toLong()) } }
     var selectedDate by remember { mutableStateOf(dates.first()) }
     var selectedCinema by remember { mutableStateOf<Cinema?>(null) }
@@ -259,7 +261,6 @@ fun ShowingsTab(
         }
     }
 
-    // wczytaj seansy przy wyborze
     LaunchedEffect(selectedDate, selectedCinema) {
         if (selectedCinema != null) {
             viewModel.loadShowingsForDate(movieId, selectedDate, selectedCinema!!.id)
@@ -269,8 +270,9 @@ fun ShowingsTab(
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        // === Wybór kina ===
         Spacer(Modifier.height(8.dp))
+
+        // Kino
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.horizontalScroll(rememberScrollState())
@@ -279,55 +281,68 @@ fun ShowingsTab(
                 Button(
                     onClick = { selectedCinema = cinema.copy() },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = if (cinema == selectedCinema) GenrePurple else MaterialTheme.colorScheme.surface
+                        containerColor = if (cinema == selectedCinema) GenrePurple else appColors.cardBackground,
+                        contentColor = appColors.text
                     )
                 ) {
-                    Text(cinema.name, color = MaterialTheme.colorScheme.onSurface)
+                    Text(cinema.name)
                 }
             }
         }
 
         Spacer(Modifier.height(16.dp))
 
-        // DatePicker
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
+        // Daty
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.horizontalScroll(rememberScrollState())
+        ) {
             dates.forEach { date ->
                 val label = date.format(DateTimeFormatter.ofPattern("EEE, dd"))
                 Button(
                     onClick = { selectedDate = date },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = if (date == selectedDate) GenrePurple else MaterialTheme.colorScheme.surface
+                        containerColor = if (date == selectedDate) GenrePurple else appColors.cardBackground,
+                        contentColor = appColors.text
                     )
-                ) { Text(label, color = MaterialTheme.colorScheme.onSurface) }
+                ) {
+                    Text(label)
+                }
             }
         }
 
         Spacer(Modifier.height(16.dp))
 
-        if (loading) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        } else if (selectedCinema != null) {
-            val showings = showingsByDate[selectedDate.toString()].orEmpty()
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(5),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                itemsIndexed(
-                    items = showings,
-                    span = { _, _ -> GridItemSpan(5) }
-                ) { _, showing ->
-                    ShowtimeCard(showing, hallTypes, onClick = {
-                        onShowtimeClick(showing.hall, showing.id)
-                    })
+        when {
+            loading -> {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = appColors.primary)
                 }
             }
-        } else {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(stringResource(R.string.choose_cinema))
+
+            selectedCinema != null -> {
+                val showings = showingsByDate[selectedDate.toString()].orEmpty()
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(5),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    itemsIndexed(
+                        items = showings,
+                        span = { _, _ -> GridItemSpan(5) }
+                    ) { _, showing ->
+                        ShowtimeCard(showing, hallTypes, onClick = {
+                            onShowtimeClick(showing.hall, showing.id)
+                        })
+                    }
+                }
+            }
+
+            else -> {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(stringResource(R.string.choose_cinema), color = appColors.metaText)
+                }
             }
         }
     }
@@ -335,25 +350,27 @@ fun ShowingsTab(
 
 @Composable
 fun MetadataItem(label: String, value: String) {
+    val appColors = LocalAppColors.current
     Column {
-        Text(text = label, fontSize = 14.sp, color = getMetaTextColor(isSystemInDarkTheme()))
-        Text(text = value, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onBackground)
+        Text(text = label, fontSize = 14.sp, color = appColors.metaText)
+        Text(text = value, fontWeight = FontWeight.Medium, color = appColors.text)
     }
 }
 
 @Composable
 fun SectionBlock(title: String, content: @Composable ColumnScope.() -> Unit) {
+    val appColors = LocalAppColors.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(12.dp))
+            .background(appColors.cardBackground, shape = RoundedCornerShape(12.dp))
             .padding(16.dp)
     ) {
         Text(
             text = title,
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground
+            color = appColors.heading
         )
         Spacer(modifier = Modifier.height(8.dp))
         content()
@@ -362,6 +379,7 @@ fun SectionBlock(title: String, content: @Composable ColumnScope.() -> Unit) {
 
 @Composable
 fun CrewInfoItem(label: String, value: String?) {
+    val appColors = LocalAppColors.current
     if (!value.isNullOrBlank()) {
         Box(
             modifier = Modifier
@@ -375,14 +393,13 @@ fun CrewInfoItem(label: String, value: String?) {
                     withStyle(style = SpanStyle(color = CrewBorderAccent, fontWeight = FontWeight.SemiBold)) {
                         append("$label: ")
                     }
-                    withStyle(style = SpanStyle(MaterialTheme.colorScheme.onBackground)) {
+                    withStyle(style = SpanStyle(appColors.text)) {
                         append(value)
                     }
                 },
                 fontSize = 14.sp
             )
         }
-
         Spacer(modifier = Modifier.height(8.dp))
     }
 }
@@ -394,6 +411,7 @@ fun ShowtimeCard(
     hallTypes: List<HallType>,
     onClick: () -> Unit = {}
 ) {
+    val appColors = LocalAppColors.current
     val timeFormatted = try {
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         OffsetDateTime.parse(showing.date).toLocalTime().format(formatter)
@@ -401,20 +419,23 @@ fun ShowtimeCard(
         stringResource(R.string.no_time)
     }
 
-    val hallTypeName = hallTypes.firstOrNull { it.id == showing.showing_type }?.hall_type ?: stringResource(R.string.default_hall)
+    val hallTypeName = hallTypes.firstOrNull { it.id == showing.showing_type }?.hall_type
+        ?: stringResource(R.string.default_hall)
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor = appColors.cardBackground)
     ) {
         Column(Modifier.padding(8.dp)) {
-            Text(text = timeFormatted, style = MaterialTheme.typography.titleMedium)
-            Text(text = hallTypeName, style = MaterialTheme.typography.bodySmall)
+            Text(text = timeFormatted, style = MaterialTheme.typography.titleMedium, color = appColors.heading)
+            Text(text = hallTypeName, style = MaterialTheme.typography.bodySmall, color = appColors.textSecondary)
             Text(
                 text = "${showing.ticket_price} PLN",
                 fontWeight = FontWeight.Medium,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = appColors.text
             )
         }
     }
