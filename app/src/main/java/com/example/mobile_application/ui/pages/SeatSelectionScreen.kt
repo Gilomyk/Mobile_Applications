@@ -61,7 +61,7 @@ fun SeatSelectionScreen(
 
     LaunchedEffect(showingId) {
         val client = OkHttpClient()
-        val request = Request.Builder().url("wss://127.0.0.1:8000/ws/movie_showings/$showingId/").build()
+        val request = Request.Builder().url("wss://cinemaland.pl/ws/movie_showings/$showingId/").build()
         client.newWebSocket(request, object: WebSocketListener() {
             override fun onMessage(ws: WebSocket, text: String) {
                 val seatId = JSONObject(text).getJSONObject("data").getInt("seat_id")

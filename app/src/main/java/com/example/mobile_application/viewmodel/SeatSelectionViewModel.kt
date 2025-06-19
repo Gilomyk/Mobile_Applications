@@ -2,7 +2,6 @@ package com.example.mobile_application.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_application.model.Seat
 import com.example.mobile_application.repository.CinemaRepository
@@ -51,6 +50,7 @@ class SeatSelectionViewModel(application: Application): AndroidViewModel(applica
         viewModelScope.launch {
             delay(1000)
             _justTakenSeatIds.update { it - seatId }
+            _takenSeatIds.update { it + seatId }
         }
     }
 }
