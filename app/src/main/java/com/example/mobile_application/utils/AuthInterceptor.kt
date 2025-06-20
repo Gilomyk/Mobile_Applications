@@ -1,6 +1,7 @@
+package com.example.mobile_application.utils
+
 import android.content.Context
 import com.example.mobile_application.BuildConfig
-import com.example.mobile_application.utils.AuthManager
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -9,9 +10,11 @@ class AuthInterceptor(private val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
         val token = AuthManager.getToken(context)
-        val urlString = originalRequest.url.toString()
 
-        val modifiedRequest = if (urlString.contains("/profile") || urlString.contains("/user_device")) {
+        val urlString = originalRequest.url.toString()
+        val useJwt = urlString.contains("/profile") || (urlString.contains("/tickets/") || urlString.contains("/user_device") && originalRequest.method == "POST")
+
+        val modifiedRequest = if (useJwt && token != null) {
             originalRequest.newBuilder()
                 .addHeader("Authorization", "Bearer $token")
                 .build()

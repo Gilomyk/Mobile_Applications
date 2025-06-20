@@ -1,13 +1,12 @@
 package com.example.mobile_application.network
 
-import AuthInterceptor
 import android.content.Context
-import com.example.mobile_application.BuildConfig
+import com.example.mobile_application.utils.AuthInterceptor
+import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.math.log
 
 data class ApiClientInterface(
     val movieService: MovieApiService,
@@ -26,7 +25,14 @@ object ApiClient {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
+        val pin = context.getPublicKeyPinFromRawCert()
+
+        val certificatePinner = CertificatePinner.Builder()
+            .add("cinemaland.pl", "sha256/$pin")
+            .build()
+
         val client = OkHttpClient.Builder()
+            .certificatePinner(certificatePinner)
             .addInterceptor(AuthInterceptor(context))
             .addInterceptor(logginInterceptor)
             .build()
