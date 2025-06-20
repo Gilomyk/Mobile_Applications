@@ -11,3 +11,7 @@ data class TokenRequest(
     val username: String,
     val password: String
 )
+
+data class DeviceRequest(
+    val fcm_token: String
+)

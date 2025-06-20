@@ -2,6 +2,7 @@ package com.example.mobile_application.repository
 
 import android.content.Context
 import android.util.Log
+import com.example.mobile_application.model.DeviceRequest
 import com.example.mobile_application.model.RegisterResponse
 import com.example.mobile_application.model.TokenRequest
 import com.example.mobile_application.model.TokenResponse
@@ -53,6 +54,11 @@ class UserRepository(private val context: Context) {
             "password2" to password2
         )
         return api.register(requestBody)
+    }
+
+    suspend fun registerDevice(fcmToken: String) {
+        val requestBody = DeviceRequest(fcmToken)
+        return api.registerUserDevice(requestBody)
     }
 
 }

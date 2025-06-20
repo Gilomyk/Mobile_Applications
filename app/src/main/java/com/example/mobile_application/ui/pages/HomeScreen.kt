@@ -39,11 +39,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobile_application.R
 import com.example.mobile_application.network.ApiClient
+import com.example.mobile_application.repository.UserRepository
 import com.example.mobile_application.ui.components.MovieCard
 import com.example.mobile_application.ui.components.SearchHeader
 import com.example.mobile_application.ui.theme.LocalAppColors
 import com.example.mobile_application.viewmodel.MovieViewModel
 import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.tasks.await
 
 @Composable
 fun HomeScreen(
@@ -60,13 +62,21 @@ fun HomeScreen(
     var isLogged by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
+    val userRepository = remember { UserRepository(context) }
 
-    // Firebase Messaging Token (dev debug)
-    FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            Log.d("FCM", "FCM token: ${task.result}")
+    LaunchedEffect(Unit) {
+        try {
+            // suspend-friendly pobranie tokena
+            val fcmToken = FirebaseMessaging.getInstance().token.await()
+            Log.d("HomeScreen", "FCM Token: $fcmToken")
+
+            userRepository.registerDevice(fcmToken)
+            Log.d("HomeScreen", "Device registered successfully")
+        } catch (e: Exception) {
+            Log.e("HomeScreen", "Device registration failed: ${e.localizedMessage}")
         }
     }
+
 
     // Check login status
     LaunchedEffect(Unit) {
