@@ -1,6 +1,12 @@
 package com.example.mobile_application.ui.pages
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -47,6 +53,7 @@ import com.example.mobile_application.viewmodel.MovieViewModel
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.tasks.await
 
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun HomeScreen(
     viewModel: MovieViewModel = viewModel(),
@@ -63,6 +70,31 @@ fun HomeScreen(
 
     val context = LocalContext.current
     val userRepository = remember { UserRepository(context) }
+
+    val activity = LocalContext.current as? Activity
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            Log.d("HomeScreen", "Notification permission granted")
+        } else {
+            Log.d("HomeScreen", "Notification permission denied")
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (activity != null) {
+                val permissionCheck = activity.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                    notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        }
+    }
+
+
 
     LaunchedEffect(Unit) {
         try {
