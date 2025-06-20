@@ -106,7 +106,7 @@ data class Order(
     val amount: Double,
     val status: PaymentStatus,
     val user: Int,
-    val email: String
+    val email: String? = null
 )
 
 data class TicketPayload(

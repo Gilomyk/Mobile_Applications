@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Main App -->
-    <string name="app_name">Mobile_Application</string>
+    <string name="app_name">Cinemaland</string>
     <string name="logo_desc">This is a logo</string>
     <string name="search_icon_desc">Need to change icon</string>
 
